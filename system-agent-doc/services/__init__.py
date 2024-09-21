@@ -1,1 +1,0 @@
-# In questa cartella dovranno essere inseriti tutte le features che devono essere sviluppate
