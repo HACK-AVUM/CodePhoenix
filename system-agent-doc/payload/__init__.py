@@ -1,0 +1,1 @@
+# In questa cartella dovranno essere inseriti tutti gli oggetti di risposta serializzati per la risposta
