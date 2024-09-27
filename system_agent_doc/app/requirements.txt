@@ -1,4 +1,21 @@
+# Tool Setting-Up
+CORS==1.0.1
 Flask==2.0.2
 PyJWT==2.3.0
 python-dotenv==1.0.1
-CORS==1.0.1
+
+# API Ollama - Local AI
+ollama==0.3.3
+# API crewAI -
+crewAi==0.63.6
+
+
+
+requests==2.32.3
+
+
+# Tool - MARKDOWN, PDF
+markdown2==2.5.0
+pdfkit==1.0.0
+reportlab
+pydoc

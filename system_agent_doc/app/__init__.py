@@ -4,4 +4,5 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-from system_agent_doc.app.controller import docs_controller
+from app.controller import docs_controller
+
