@@ -1,5 +1,6 @@
 from crewai import Task
 
+
 ################## CREATE ANALYZE CODE TASK #####################
 """
 create_analyze_code_task() - create a task for analyzing refactored code
@@ -8,8 +9,8 @@ create_analyze_code_task() - create a task for analyzing refactored code
 """
 def create_analyze_code_task(agent):
     return Task(
-        description='Analyze the refactored code written in Python and Java.',
-        expected_output='Detailed analysis report of the refactored code.',
+        description='Perform a comprehensive analysis of the refactored code written in Python and Java. Identify improvements, potential issues, and adherence to best practices.',
+        expected_output='A detailed report outlining the analysis of the refactored code, including identified issues, areas of improvement, and adherence to coding standards.',
         agent=agent
     )
 ####################################################
@@ -22,8 +23,8 @@ create_generate_pdf_task() - create a task for generating PDF documentation
 """
 def create_generate_pdf_task(agent):
     return Task(
-        description='Generate PDF documentation based on the code analysis report.',
-        expected_output='PDF document with detailed code documentation.',
+        description='Generate comprehensive PDF documentation based on the code analysis report. Ensure the documentation is well-structured and includes all necessary details.',
+        expected_output='A well-structured PDF document containing detailed documentation of the code, including analysis results, code snippets, and explanations.',
         agent=agent
     )
 ####################################################
@@ -36,8 +37,8 @@ create_generate_markdown_task() - create a task for generating Markdown document
 """
 def create_generate_markdown_task(agent):
     return Task(
-        description='Generate Markdown documentation based on the code analysis report.',
-        expected_output='Markdown document with detailed code documentation.',
+        description='Generate comprehensive Markdown documentation based on the code analysis report. Ensure the documentation is well-structured and includes all necessary details.',
+        expected_output='A well-structured Markdown document containing detailed documentation of the code, including analysis results, code snippets, and explanations.',
         agent=agent
     )
 ####################################################
@@ -50,8 +51,8 @@ create_generate_html_task() - create a task for generating HTML documentation
 """
 def create_generate_html_task(agent):
     return Task(
-        description='Generate HTML documentation based on the code analysis report.',
-        expected_output='HTML document with detailed code documentation.',
-        agent=agent
+        description='Generate comprehensive HTML documentation based on the code analysis report. Ensure the documentation is well-structured and includes all necessary details, formatted appropriately for web viewing.',
+        expected_output='A well-structured HTML document containing detailed documentation of the code, including analysis results, code snippets, and explanations, formatted for web viewing.',
+        agent=agent,
     )
 ####################################################
