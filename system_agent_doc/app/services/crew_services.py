@@ -1,9 +1,12 @@
 from crewai import Crew
+from crewai.process import Process
+
 # Import TASK 
 from app.services.task.tasks_services import create_analyze_code_task
 from app.services.task.tasks_services import create_generate_markdown_task,create_generate_html_task,create_generate_pdf_task
 # Import Services 
 from app.services.agent.agent_services import create_code_analyzer_agent, create_html_documenter_agent, create_markdown_documenter_agent, create_pdf_documenter_agent
+
 
 
 ################## AGENT MARKDOWN CREW #####################
@@ -14,20 +17,19 @@ create_markdown_crew(code) - Create a crew to analyze refactored code and genera
 
 @:return: dict - A status message indicating success or error.
 """
-def create_markdown_crew(model , prompt , language_to_analyze):
+def create_markdown_crew(model , language_to_analyze, directory_path):
     
     
     # Create Code Analyzer Agents
     agent_code_analyze = create_code_analyzer_agent(
         model= model,
-        prompt=prompt,
         language_to_analyze=language_to_analyze
     )
 
     # Define markdown agent generation 
     agent_generation_markdown = create_markdown_documenter_agent(
         model=model,
-        prompt=prompt
+        language_to_analyze=language_to_analyze
     )
 
 
@@ -39,11 +41,136 @@ def create_markdown_crew(model , prompt , language_to_analyze):
         agents=[task_analyze_code.agent, task_markdown_documenter.agent],
         tasks=[ task_analyze_code, task_markdown_documenter],
         verbose=True,
-        planning=True
+        planning=True,
+        memory=True,
+        process=Process.sequential
     )
 
-    crew.kickoff()
+    markdown_result_document = crew.kickoff(inputs={
+        'directory_path': directory_path,
+        'output_file':'docs/project-document.md'
+    })
 
-    return {"status": "success", "message": "Markdown documentation generated."}
+    return {
+        "status": "success",
+        "message": "Markdown documentation generated.",
+        "result": markdown_result_document
+    }
 ################## AGENT MARKDOWN CREW #####################
 
+
+
+
+################## AGENT PDF CREW #####################
+"""
+create_markdown_crew(code) - Create a crew to analyze refactored code and generate Markdown documentation.
+
+@:param code: str - The code to be analyzed and documented.
+
+@:return: dict - A status message indicating success or error.
+"""
+def create_pdf_crew(
+        model , # Model that i want use  
+        language_to_analyze, # Language to Analyze
+        directory_path 
+        ):
+    
+
+    
+    # Create Code Analyzer Agents
+    agent_code_analyze = create_code_analyzer_agent(
+        model = model,
+        language_to_analyze = language_to_analyze
+    )
+
+    
+    # Define markdown agent generation 
+    agent_generation_pdf = create_pdf_documenter_agent(
+        model=model,
+        language_to_analyze=language_to_analyze
+    )
+
+    print("Sono arrivato alla generazione dei Task ")
+
+    task_analyze_code = create_analyze_code_task(agent=agent_code_analyze)
+    task_pdf_documenter = create_generate_pdf_task(agent= agent_generation_pdf)
+
+    print("Sono arrivato alla creazione della crew!")
+
+    crew = Crew(
+        agents=[task_analyze_code.agent, task_pdf_documenter.agent],
+        tasks=[ task_analyze_code, task_pdf_documenter],
+        verbose=True,  
+        process = Process.sequential,
+    )
+
+    print("Sono arrivato a dopo la creazione della crew!")
+
+    print("Ecco sto per effettuare la task")
+
+    pdf_result =  crew.kickoff(inputs={
+        'directory_path': directory_path,
+        'output_file':'docs/project-document.pdf'
+    })
+
+
+    print("Ecco il risultato !")
+
+    return {
+        "status": "success",
+        "message": "Markdown documentation generated.",
+        "result": pdf_result
+    }
+################## AGENT MARKDOWN CREW #####################
+
+
+
+
+################## AGENT PDF CREW #####################
+"""
+create_markdown_crew(code) - Create a crew to analyze refactored code and generate Markdown documentation.
+
+@:param code: str - The code to be analyzed and documented.
+
+@:return: dict - A status message indicating success or error.
+"""
+def create_html_crew(model , language_to_analyze, directory_path):
+    
+    
+    # Create Code Analyzer Agents
+    agent_code_analyze = create_code_analyzer_agent(
+        model= model,
+        language_to_analyze=language_to_analyze
+    )
+
+    # Define markdown agent generation 
+    agent_generation_html = create_html_documenter_agent(
+        model=model,
+        language_to_analyze=language_to_analyze
+    )
+
+
+    task_analyze_code = create_analyze_code_task(agent=agent_code_analyze)
+    task_html_documenter = create_generate_html_task(agent= agent_generation_html)
+
+
+    crew = Crew(
+        agents=[task_analyze_code.agent, task_html_documenter.agent],
+        tasks=[ task_analyze_code, task_html_documenter],
+        verbose=True,
+        planning=True,
+        memory=True,
+        process=Process.sequential
+    )
+
+    html_documentation_result = crew.kickoff(inputs={
+        'directory_path': directory_path,
+        'output_file':'docs/project-document.html'
+    })
+
+    return {
+        "status": "success",
+        "message": "Markdown documentation generated.",
+        "result": html_documentation_result
+    }
+################## AGENT MARKDOWN CREW #####################

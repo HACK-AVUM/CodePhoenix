@@ -11,7 +11,8 @@ def create_analyze_code_task(agent):
     return Task(
         description='Perform a comprehensive analysis of the refactored code written in Python and Java. Identify improvements, potential issues, and adherence to best practices.',
         expected_output='A detailed report outlining the analysis of the refactored code, including identified issues, areas of improvement, and adherence to coding standards.',
-        agent=agent
+        agent=agent,
+
     )
 ####################################################
 
@@ -25,7 +26,9 @@ def create_generate_pdf_task(agent):
     return Task(
         description='Generate comprehensive PDF documentation based on the code analysis report. Ensure the documentation is well-structured and includes all necessary details.',
         expected_output='A well-structured PDF document containing detailed documentation of the code, including analysis results, code snippets, and explanations.',
-        agent=agent
+        agent=agent,
+        output_file='docs/project-documentation.pdf'  # Specifica la cartella di output
+        
     )
 ####################################################
 
@@ -39,7 +42,8 @@ def create_generate_markdown_task(agent):
     return Task(
         description='Generate comprehensive Markdown documentation based on the code analysis report. Ensure the documentation is well-structured and includes all necessary details.',
         expected_output='A well-structured Markdown document containing detailed documentation of the code, including analysis results, code snippets, and explanations.',
-        agent=agent
+        agent=agent,
+        output_file='docs/project-documentation.md'  # Specifica la cartella di output
     )
 ####################################################
 
@@ -54,5 +58,6 @@ def create_generate_html_task(agent):
         description='Generate comprehensive HTML documentation based on the code analysis report. Ensure the documentation is well-structured and includes all necessary details, formatted appropriately for web viewing.',
         expected_output='A well-structured HTML document containing detailed documentation of the code, including analysis results, code snippets, and explanations, formatted for web viewing.',
         agent=agent,
+        output_file='docs/project-documentation.html'  # Specifica la cartella di output
     )
 ####################################################

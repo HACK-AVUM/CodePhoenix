@@ -81,6 +81,17 @@ def get_ollama_llama2_model():
 #############################################
 
 
+################## MODEL LLAMA3.2 #####################
+"""
+get_ollama_llama3_2_model() - get LLAMA2 model 
+@:return MODEL_LLAMA3.2
+"""
+def get_ollama_llama3_2_model():
+    return os.getenv('MODEL_LLAMA3_2')
+#############################################
+
+
+
 ################## MODEL CHATGPT4  #####################
 """
 get_chatgpt4_model() - get CHATGPT4 model 
