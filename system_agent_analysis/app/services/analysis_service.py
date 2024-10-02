@@ -3,22 +3,9 @@ import os
 from crewai import Agent, Task, Crew, Process
 from dotenv import load_dotenv
 
+os.environ["TOGETHERAI_API_KEY"] = "c47b3fa9622715d6695302a193d0488be41d61660b82ca6502eb45c61efce2c9"
+llm = "together_ai/meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
 
-
-################################################
-# NON FUNZIONANTE
-# NON POSSIAMO USARE AZURE PERCHE' CI LIMITA A 6 RICHIESTE AL SECONDO
-# SICCOME NE FA MOLTE DI PIU' NON POSSIAMO USARLO
-################################################
-
-
-os.environ["AZURE_API_KEY"] = "b4436e21047b4eeab24c792dc165806c"  # "my-azure-api-key"
-os.environ["AZURE_API_BASE"] = "https://openaiazuregratis.openai.azure.com"
-os.environ["AZURE_API_VERSION"] = "2024-06-01"  # "2023-05-15"
-
-llm = "azure/gpt-35-turbo"  # deployment name
-
-os.environ['LITELLM_LOG'] = 'DEBUG'
 
 # Funzione per analizzare il codice legacy
 def analyze_code(code):
