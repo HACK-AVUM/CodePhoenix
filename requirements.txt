@@ -1,0 +1,2 @@
+Flask==2.0.1
+crewAI==1.0.0  # Se disponibile o simile

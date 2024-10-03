@@ -1,0 +1,140 @@
+# app/__init__.py
+from flask import Flask
+from dotenv import load_dotenv
+
+load_dotenv()
+
+app = Flask(__name__)
+
+from app import routes
+
+# config.py
+import os
+
+SERPER_API_KEY = os.getenv("SERPER_API_KEY")
+
+# agents.py
+from crewai import Agent
+
+def create_agents():
+    cobol_analyst = Agent(
+        role='COBOL Code Analyst',
+        goal='Analyze and understand COBOL legacy code structure and functionality',
+        backstory="""You are an experienced COBOL developer with decades of experience in mainframe systems.
+        Your expertise lies in dissecting complex COBOL programs and understanding their core logic.""",
+        verbose=True,
+        allow_delegation=False,
+    )
+
+    jcl_analyst = Agent(
+        role='JCL Specialist',
+        goal='Examine JCL scripts and their interaction with COBOL programs',
+        backstory="""You are a JCL expert with in-depth knowledge of mainframe job control.
+        You excel at understanding how JCL scripts orchestrate the execution of COBOL programs.""",
+        verbose=True,
+        allow_delegation=False,
+    )
+
+    pli_analyst = Agent(
+        role='PL/I Code Analyst',
+        goal='Analyze PL/I code structure and its integration with COBOL systems',
+        backstory="""You are a seasoned PL/I developer with a strong background in mainframe applications.
+        Your strength is in understanding complex PL/I code and its interaction with COBOL programs.""",
+        verbose=True,
+        allow_delegation=False,
+    )
+
+    complexity_assessor = Agent(
+        role='Code Complexity Assessor',
+        goal='Evaluate the overall complexity of the legacy codebase',
+        backstory="""You are an expert in software metrics and complexity analysis.
+        You specialize in assessing code complexity across different languages and providing actionable insights.""",
+        verbose=True,
+        allow_delegation=True
+    )
+
+    return {
+        'cobol_analyst': cobol_analyst,
+        'jcl_analyst': jcl_analyst,
+        'pli_analyst': pli_analyst,
+        'complexity_assessor': complexity_assessor
+    }
+
+# tasks.py
+from crewai import Task
+
+def create_tasks(agents, cobol_code):
+    tasks = [
+        Task(
+            description=f"""Analyze the structure and functionality of the COBOL code.
+            Identify key modules, data structures, and business logic implementations.
+            Cobol code: {cobol_code}""",
+            expected_output="Detailed report on COBOL code structure and functionality",
+            agent=agents['cobol_analyst']
+        ),
+        Task(
+            description="""Examine the JCL scripts associated with the COBOL programs.
+            Determine job steps, data flow, and integration points.""",
+            expected_output="Comprehensive analysis of JCL scripts and their role in the system",
+            agent=agents['jcl_analyst']
+        ),
+        Task(
+            description="""Analyze the PL/I code components and their interaction with COBOL programs.
+            Identify shared data structures and inter-program communication.""",
+            expected_output="Detailed report on PL/I code structure and COBOL integration",
+            agent=agents['pli_analyst']
+        ),
+        Task(
+            description=f"""Using the insights from previous analyses, assess the overall complexity of the legacy codebase.
+            Provide metrics and recommendations for refactoring priorities.
+            Cobol code: {cobol_code}""",
+            expected_output="Comprehensive complexity assessment report with refactoring suggestions",
+            agent=agents['complexity_assessor']
+        )
+    ]
+    return tasks
+
+# analysis.py
+from crewai import Crew, Process
+
+def perform_analysis(cobol_code):
+    agents = create_agents()
+    tasks = create_tasks(agents, cobol_code)
+    
+    analysis_crew = Crew(
+        agents=list(agents.values()),
+        tasks=tasks,
+        verbose=True,
+        process=Process.sequential
+    )
+
+    return analysis_crew.kickoff()
+
+# routes.py
+from flask import request, jsonify
+from app import app
+from app.analysis import perform_analysis
+import ast
+
+@app.route('/analyze', methods=['POST'])
+def analyze():
+    code = request.json.get('code')
+    if not code:
+        return jsonify({"error": "No code provided"}), 400
+
+    try:
+        tree = ast.parse(code)
+        ast_analysis = str(tree)
+    except SyntaxError as e:
+        return jsonify({"error": f"Syntax error in code: {str(e)}"}), 400
+
+    analysis_result = perform_analysis(code)
+
+    return jsonify({
+        "status": "success",
+        "ast_analysis": ast_analysis,
+        "crew_analysis": analysis_result
+    })
+
+if __name__ == '__main__':
+    app.run(port=5001)
