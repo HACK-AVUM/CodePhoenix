@@ -1,9 +1,8 @@
-import jwt
 from flask import request, jsonify
-
 from app import app
-from app.services.directory_service import handle_directory_path, handle_directory_zip
-from app.services.file_service import handle_file, handle_text
+from app.services.docs_service import generate_pdf_documentation
+
+
 
 """
 
@@ -42,3 +41,56 @@ def generate_documentation_controller():
         return jsonify({'success ': 'The directory .zip was  uploaded'}), 200
         #refactored_code = handle_directory_zip(directory)
     return jsonify({'error' : 'The file was not uploaded'}), 500
+
+
+
+
+
+
+
+@app.route('/create-pdf-crew', methods=['POST'])
+def create_pdf_crew_controller():
+
+    data = request.json
+
+    print(data)
+
+    model = data['model']
+    language_to_analyze = data['language_to_analyze']
+    directory_path = data['directory_path']
+
+    print(f"Directory Path : {directory_path}")
+    print(f"Language to analyze : {language_to_analyze}")
+    print(f"Model : {model}")
+
+    if not model or not language_to_analyze or not directory_path:
+        return jsonify({
+            "status": "error",
+            "message": "Model, language_to_analyze, and directory_path are required fields."
+        }), 400
+    
+    try:
+        result = generate_pdf_documentation(
+            model=model,
+            language_to_analyze=language_to_analyze,
+            directory_path=directory_path
+        )
+        return jsonify({
+            "status": "success",
+            "message": "PDF crew created and task started successfully.",
+            "result": result
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+
+@app.route('/hello', methods=['GET'])
+def say_hello_controller():
+    print("Hello, Welcome on our application !")
+    return jsonify({
+        "status": "success",
+        "message": "Say Hello complete!"
+    }), 200
