@@ -64,7 +64,7 @@ def refactoring_code(code, analysis_result):
     # Execute the refactoring
     refactoring_result = refactoring_crew.kickoff()
 
-    return refactoring_result
+    return str(refactoring_result)
 
 if __name__ == "__main__":
     load_dotenv()

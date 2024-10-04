@@ -58,7 +58,7 @@ def analyze_code(code):
     # Execute the analysis
     analysis_result = analysis_crew.kickoff()
 
-    return analysis_result
+    return str(analysis_result)
 
 
 if __name__ == "__main__":

@@ -67,7 +67,7 @@ def perform_test(old_code, old_code_analysis_result, new_code_to_test):
     # Execute the testing
     test_result = testing_crew.kickoff()
 
-    return test_result
+    return str(test_result)
 
 if __name__ == "__main__":
     load_dotenv()

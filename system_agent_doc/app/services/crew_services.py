@@ -1,10 +1,10 @@
 from crewai import Crew
 from crewai.process import Process
 
-# Import TASK 
+# Import TASK
 from app.services.task.tasks_services import create_analyze_code_task
 from app.services.task.tasks_services import create_generate_markdown_task,create_generate_html_task,create_generate_pdf_task
-# Import Services 
+# Import Services
 from app.services.agent.agent_services import create_code_analyzer_agent, create_html_documenter_agent, create_markdown_documenter_agent, create_pdf_documenter_agent
 
 
@@ -18,15 +18,15 @@ create_markdown_crew(code) - Create a crew to analyze refactored code and genera
 @:return: dict - A status message indicating success or error.
 """
 def create_markdown_crew(model , language_to_analyze, directory_path):
-    
-    
+
+
     # Create Code Analyzer Agents
     agent_code_analyze = create_code_analyzer_agent(
         model= model,
         language_to_analyze=language_to_analyze
     )
 
-    # Define markdown agent generation 
+    # Define markdown agent generation
     agent_generation_markdown = create_markdown_documenter_agent(
         model=model,
         language_to_analyze=language_to_analyze
@@ -70,21 +70,21 @@ create_markdown_crew(code) - Create a crew to analyze refactored code and genera
 @:return: dict - A status message indicating success or error.
 """
 def create_pdf_crew(
-        model , # Model that i want use  
+        model , # Model that i want use
         language_to_analyze, # Language to Analyze
-        directory_path 
+        directory_path
         ):
-    
 
-    
+
+
     # Create Code Analyzer Agents
     agent_code_analyze = create_code_analyzer_agent(
         model = model,
         language_to_analyze = language_to_analyze
     )
 
-    
-    # Define markdown agent generation 
+
+    # Define markdown agent generation
     agent_generation_pdf = create_pdf_documenter_agent(
         model=model,
         language_to_analyze=language_to_analyze
@@ -100,7 +100,7 @@ def create_pdf_crew(
     crew = Crew(
         agents=[task_analyze_code.agent, task_pdf_documenter.agent],
         tasks=[ task_analyze_code, task_pdf_documenter],
-        verbose=True,  
+        verbose=True,
         process = Process.sequential,
     )
 
@@ -135,15 +135,15 @@ create_markdown_crew(code) - Create a crew to analyze refactored code and genera
 @:return: dict - A status message indicating success or error.
 """
 def create_html_crew(model , language_to_analyze, directory_path):
-    
-    
+
+
     # Create Code Analyzer Agents
     agent_code_analyze = create_code_analyzer_agent(
         model= model,
         language_to_analyze=language_to_analyze
     )
 
-    # Define markdown agent generation 
+    # Define markdown agent generation
     agent_generation_html = create_html_documenter_agent(
         model=model,
         language_to_analyze=language_to_analyze

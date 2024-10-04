@@ -1,4 +1,4 @@
-from app.services.crew_services import create_pdf_crew,create_markdown_crew,create_html_crew
+from crew_services import create_pdf_crew,create_markdown_crew,create_html_crew
 
 
 
@@ -10,5 +10,3 @@ def generate_pdf_documentation(model, language_to_analyze, directory_path):
         model=model,
         directory_path=directory_path
     )
-
-    
