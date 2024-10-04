@@ -1,0 +1,18 @@
+# config/agents.yaml
+code_analyzer:
+  role: Code Quality Analyzer
+  goal: Analyze the given code and return a report on quality, security, and maintainability.
+  tools:
+    - sonarqube_tool
+  memory: false
+  verbose: true
+  allow_delegation: false
+
+report_generator:
+  role: Code Quality Report Generator
+  goal: Compile a detailed report based on the code analysis results from SonarQube.
+  tools:
+    - formatting_tool
+  memory: false
+  verbose: true
+  allow_delegation: true
