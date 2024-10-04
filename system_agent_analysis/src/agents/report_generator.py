@@ -1,31 +1,24 @@
-import unittest
-from agents.report_generator import ReportGeneratorAgent
+## report_generator.py
+#Questo agente è responsabile della generazione del report finale, utilizzando il FormattingTool per strutturare i risultati dell'analisi in un formato leggibile.
+from crewai import Agent
 from tools.formatting_tool import FormattingTool
 
-class TestReportGeneratorAgent(unittest.TestCase):
-    def test_generate_report(self):
-        agent = ReportGeneratorAgent()
-        analysis_data = {
-            'issues': [
-                {
-                    'severity': 'Critical',
-                    'message': 'Null pointer dereference',
-                    'file': 'main.java',
-                    'line': 45,
-                    'description': 'This line of code may lead to a null pointer dereference.'
-                },
-                {
-                    'severity': 'Major',
-                    'message': 'Unused import statement',
-                    'file': 'main.java',
-                    'line': 10,
-                    'description': 'This import statement is not used in the code.'
-                }
-            ]
-        }
-        formatted_report = agent.tools[0].format_report(analysis_data)
-        self.assertIn('Critical: Null pointer dereference', formatted_report)
-        self.assertIn('Major: Unused import statement', formatted_report)
+##Descrizione dell'agente: Il ReportGeneratorAgent è responsabile della creazione del report basato sui dati dell'analisi del codice. 
+# Utilizza il FormattingTool per generare un report in markdown o HTML.
+class ReportGeneratorAgent(Agent):
+    def __init__(self):
+        formatting_tool = FormattingTool(format_type='markdown')
+        super().__init__(
+            role='Report Generator',
+            goal='Compile a detailed report based on the code analysis results.',
+            tools=[formatting_tool],
+            verbose=True,
+            allow_delegation=True
+        )
+    
 
-if __name__ == '__main__':
-    unittest.main()
+    ##Metodo generate_report: 
+    # Questo metodo viene usato per chiamare il tool di formattazione e creare il report finale.
+    # Valore: Con il formato markdown predefinito, il report è facilmente leggibile dai team tecnici e integrabile in sistemi di documentazione o dashboard di monitoraggio.
+    def generate_report(self, analysis_data):
+        return self.tools[0].format_report(analysis_data)

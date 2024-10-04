@@ -1,4 +1,6 @@
-# config/agents.yaml
+##agents.yaml: 
+#Definisce gli agenti e le loro proprietà.
+
 code_analyzer:
   role: Code Quality Analyzer
   goal: Analyze the given code and return a report on quality, security, and maintainability.

@@ -1,4 +1,5 @@
-# tools/formatting_tool.py
+##formatting_tool.py: 
+# Gestisce la formattazione del report finale, ad esempio in Markdown o PDF.
 
 class FormattingTool:
     def __init__(self, format_type='markdown'):

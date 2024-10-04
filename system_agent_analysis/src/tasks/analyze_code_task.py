@@ -1,3 +1,6 @@
+##analyze_code_task.py: 
+# Definisce il task che assegna all'agente di analisi del codice il compito di elaborare il codice sorgente.
+
 from crewai import Task
 from agents.code_analyzer import CodeAnalyzerAgent
 

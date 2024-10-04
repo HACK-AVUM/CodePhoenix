@@ -1,3 +1,5 @@
+##sonarqube_tool.py: 
+# Implementa la logica per interfacciarsi con l'API di SonarQube e inviare/ricevere risultati.
 import requests
 
 class SonarQubeTool:

@@ -1,4 +1,5 @@
-
+##code_analyzer.py: 
+# Definisce l'agente che esegue l'analisi del codice utilizzando SonarQube.
 from crewai import Agent
 from tools.sonarqube_tool import SonarQubeTool
 

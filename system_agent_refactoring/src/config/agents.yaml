@@ -1,0 +1,9 @@
+## Definisce l'agente responsabile del refactoring e il tool che utilizza.
+code_refactor:
+  role: Code Refactor
+  goal: Refactor the code to improve maintainability, readability, and performance.
+  tools:
+    - refactor_tool
+  memory: false
+  verbose: true
+  allow_delegation: true

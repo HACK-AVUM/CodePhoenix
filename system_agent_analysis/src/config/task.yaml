@@ -1,0 +1,26 @@
+## tasks.yaml: 
+# Definisce i task e le loro proprietà. 
+# Questi task vengono assegnati agli agenti per l'analisi del codice e la generazione dei report.
+
+
+##analyze_code_task: 
+#Questo task viene assegnato all'agente di analisi del codice (CodeAnalyzerAgent) per analizzare il codice sorgente e produrre un elenco di problemi.
+#Valore: Assicura che il task di analisi si concentri su vulnerabilità, bug e problematiche legate alla manutenibilità del codice.
+analyze_code_task:
+  description: >
+    Analyze the provided source code using SonarQube to identify issues such as bugs, vulnerabilities, and code smells.
+  expected_output: >
+    A list of issues found in the code, including severity, message, and file location.
+  agent: code_analyzer
+
+
+##generate_report_task: 
+#Il task che assegna al ReportGeneratorAgent la creazione di un report ben formattato, basato sui risultati dell'analisi del codice.
+#Valore: Fornisce un output leggibile e digeribile dai team di sviluppo e management, facilitando il processo decisionale.
+Valore: Fornisce un output leggibile e digeribile dai team di sviluppo e management, facilitando il processo decisionale.
+generate_report_task:
+  description: >
+    Generate a well-structured report based on the analysis results from SonarQube. The report should summarize the issues found.
+  expected_output: >
+    A detailed report formatted in markdown, highlighting key issues and their severity.
+  agent: report_generator
