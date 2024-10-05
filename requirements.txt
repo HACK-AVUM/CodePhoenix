@@ -1,3 +1,5 @@
-Flask
 crewAI
 python-dotenv
+fastapi==0.78.0
+uvicorn==0.17.6
+requests==2.26.0

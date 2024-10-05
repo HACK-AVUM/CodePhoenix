@@ -1,6 +1,8 @@
 ## test_code_analyzer.py
 #Testa l'agente di analisi del codice.
 
+##Da aggiungere tutte le varie librerie necessarie per il testing (jUnit, ecc...)
+
 import unittest
 from src.agents.code_analyzer import CodeAnalyzerAgent
 

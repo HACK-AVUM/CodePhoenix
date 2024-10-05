@@ -3,6 +3,8 @@
 # Questo potrebbe interfacciarsi con librerie di analisi del codice come Rope o PyLint per Python, oppure JRefactory per Java.
 import rope
 
+##Da aggiungere tutte le varie librerie necessarie per il testing (jUnit, ecc...)
+
 class RefactorTool:
     def __init__(self):
         # Rope is an example tool for Python refactoring. You can customize for other languages.
