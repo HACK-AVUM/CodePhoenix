@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     wget \
     unzip \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Step 3: Installare SonarQube
 ENV SONARQUBE_VERSION=9.5.0.56709
@@ -34,14 +34,16 @@ RUN mkdir -p $SONAR_SCANNER_HOME && \
 
 # Step 5: Installare le dipendenze Python
 WORKDIR /app
-COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Step 6: Copiare tutto il codice sorgente nel container
+# Step 6: Copy the requirements file and install dependencies
+COPY src/requirements.txt ./
+RUN pip3 install --no-cache-dir -r requirements.txt
+# Step 6: Copy all source code to the working directory
 COPY . .
 
-# Step 7: Esporre la porta 8000 per FastAPI
-EXPOSE 8000
+# Step 7: Start SonarQube and your Python app using a script
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
 
-# Step 8: Eseguire SonarQube in background e lanciare l'app FastAPI tramite Uvicorn
-CMD ["/bin/bash", "-c", "$SONARQUBE_HOME/bin/linux-x86-64/sonar.sh start && uvicorn src.main:app --host 0.0.0.0 --port 8000"]
+# Correct CMD syntax
+CMD ["/usr/local/bin/start.sh"]
