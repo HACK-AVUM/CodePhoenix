@@ -3,5 +3,3 @@ pydantic==2.7.1
 fastapi==0.100.0
 uvicorn==0.18.3
 requests==2.31.0
-crewai==0.65.2 
-crewai-tools==0.12.1

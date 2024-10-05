@@ -38,7 +38,10 @@ WORKDIR /app
 
 # Step 6: Copiare il file requirements e installare le dipendenze
 COPY src/requirements.txt ./ 
-RUN pip install -r requirements.txt 
+RUN pip install -r requirements.txt
+
+# Installa crewai 
+RUN pip install crewai==0.65.2  crewai-tools==0.12.1
 
 
 # Step 8: Copiare tutto il codice sorgente nella working directory
