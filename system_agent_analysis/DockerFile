@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     wget \
     unzip \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Step 3: Install SonarQube
 # Define SonarQube version
@@ -41,11 +41,16 @@ ENV PATH="$SONAR_SCANNER_HOME/bin:$PATH"
 
 # Step 5: Copy Python application files and install dependencies
 WORKDIR /app
-COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
 
+# Step 6: Copy the requirements file and install dependencies
+COPY src/requirements.txt ./
+RUN pip3 install --no-cache-dir -r requirements.txt
 # Step 6: Copy all source code to the working directory
 COPY . .
 
-# Step 7: Start SonarQube as a background process
-CMD ["/bin/bash", "-c", "$SONARQUBE_HOME/bin/linux-x86-64/sonar.sh start && python3 src/main.py"]
+# Step 7: Start SonarQube and your Python app using a script
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# Correct CMD syntax
+CMD ["/usr/local/bin/start.sh"]

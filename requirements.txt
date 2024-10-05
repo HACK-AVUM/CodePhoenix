@@ -1,3 +1,8 @@
 Flask
 crewAI
 python-dotenv
+
+#per connessione dei microservizi
+
+fastapi==0.78.0
+uvicorn==0.17.0
