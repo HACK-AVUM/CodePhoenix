@@ -1,16 +1,21 @@
 # Dockerfile per il microservizio di analisi del codice
 
 # Step 1: Usare un'immagine base Python con Java 17
-FROM python:3.10-slim
+FROM python:3.12-slim
 
 # Step 2: Installare OpenJDK 17 e altre dipendenze
 RUN apt-get update && apt-get install -y \
+    apt-transport-https \
+    && apt-get update && apt-get install -y \
     openjdk-17-jdk \
     python3 \
     curl \
+    g++ \
+    make \
     wget \
     unzip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 
 # Aggiornare pip
 RUN pip install --upgrade pip
