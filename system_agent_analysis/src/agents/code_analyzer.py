@@ -11,5 +11,5 @@ class CodeAnalyzerAgent(Agent):
             goal='Analyze source code using SonarQube',
             tools=[sonar_tool],
             verbose=True,
-            allow_delegation=False
+            allow_delegation=False,
         )

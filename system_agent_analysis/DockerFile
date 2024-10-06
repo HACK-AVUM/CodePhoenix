@@ -36,24 +36,25 @@ RUN mkdir -p $SONAR_SCANNER_HOME && \
     rm /tmp/sonarscanner.zip
 
 # Step 5: Installare le dipendenze Python
-WORKDIR /app
+WORKDIR /system_agent_analysis
 
-# Step 6: Copiare il file requirements e installare le dipendenze
-COPY src/requirements.txt ./ 
+# Copy the requirements.txt file into the container at /app
+COPY requirements.txt requirements.txt
+
+# Install the dependencies specified in requirements.txt
 RUN pip install -r requirements.txt
-
-# Installa crewai e crewai-tools
-RUN pip install crewai==0.65.2 crewai-tools==0.12.1
 
 # Step 8: Copiare tutto il codice sorgente nella working directory
 COPY . .
 
 # Step 9: Copiare il file start.sh e renderlo eseguibile
-COPY start.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
 
-# Step 10: Esposizione della porta del servizio
+COPY start.sh start.sh
+RUN chmod +x start.sh
+
+# Expose port 8000 to allow traffic outside the container to reach the application
 EXPOSE 8000
 
-# Step 11: Imposta la bash come comando di avvio
-CMD ["/bin/bash"]
+# Command to run the application using uvicorn
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000","--reload"]
+
