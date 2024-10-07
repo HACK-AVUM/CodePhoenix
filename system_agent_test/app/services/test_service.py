@@ -30,7 +30,7 @@ def perform_test(old_code, old_code_analysis_result, new_code_to_test):
         backstory="""You are a performance optimization expert with a keen eye for efficiency improvements.
         Your expertise lies in identifying performance bottlenecks and suggesting optimizations.""",
         verbose=True,
-        allow_delegation=True,
+        allow_delegation=False,
         llm=llm,
     )
 
@@ -67,7 +67,7 @@ def perform_test(old_code, old_code_analysis_result, new_code_to_test):
     # Execute the testing
     test_result = testing_crew.kickoff()
 
-    return test_result
+    return str(test_result.raw)
 
 if __name__ == "__main__":
     load_dotenv()
