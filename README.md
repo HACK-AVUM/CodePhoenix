@@ -40,7 +40,7 @@ Se non hai già Docker installato sul tuo sistema, segui questi passaggi:
 Nella directory principale del progetto, esegui il seguente comando per costruire l'immagine Docker:
 
 ```bash
-docker compose build
+docker-compose build
 ```
 
 Questo comando costruirà tutte le immagini Docker necessarie per l'applicazione come specificato nel file `docker-compose.yml`.
@@ -50,14 +50,35 @@ Questo comando costruirà tutte le immagini Docker necessarie per l'applicazione
 Una volta completata la costruzione dell'immagine, puoi avviare l'applicazione con il seguente comando:
 
 ```bash
-docker compose up
+docker-compose up
 ```
 
 Questo comando avvierà tutti i servizi definiti nel file `docker-compose.yml`.
 
+## Configurazione di SonarQube
+
+Dopo aver avviato l'applicazione e aver visto il messaggio `SonarQube is operative.`, segui questi passaggi per configurare SonarQube:
+
+1. Apri il browser e vai su `http://localhost:9000`
+2. Accedi con le credenziali predefinite:
+   - Username: `admin`
+   - Password: `admin`
+3. Segui le istruzioni per cambiare la password al primo accesso
+4. Crea un nuovo progetto chiamato "prova"
+5. Genera un token per questo progetto
+6. Copia il token generato
+7. Apri il file `.env` nella directory principale del progetto
+8. Aggiungi la seguente riga, sostituendo `<TUO_TOKEN_SONARQUBE>` con il token copiato:
+
+   ```
+   SONARQUBE_TOKEN=<TUO_TOKEN_SONARQUBE>
+   ```
+
+9. Salva e chiudi il file `.env`
+
 ## Accesso all'Applicazione
 
-Dopo aver avviato l'applicazione, puoi accedere al frontend navigando nel tuo browser web a:
+Dopo aver configurato SonarQube, puoi accedere al frontend dell'applicazione navigando nel tuo browser web a:
 
 ```
 http://localhost:3000
@@ -68,5 +89,3 @@ http://localhost:3000
 - Per arrestare l'applicazione, premi `Ctrl+C` nel terminale dove hai eseguito `docker compose up`.
 - Per eseguire l'applicazione in background, usa il comando `docker compose up -d`.
 - Per visualizzare i log dell'applicazione in esecuzione in background, usa `docker compose logs -f`.
-
-Congratulazioni! Hai completato con successo l'installazione e l'avvio dell'applicazione.

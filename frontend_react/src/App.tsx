@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { Upload, FileUp } from 'lucide-react'
+import { useState, useEffect } from 'react'
 import Navbar from './components/Navbar'
 import FileUploader from './components/FileUploader'
 import ResultDisplay from './components/ResultDisplay'
-import ResultSection from './components/ResultSection'
 
-// Import a markdown parser library (you'll need to install this)
-import ReactMarkdown from 'react-markdown'
 
 
 function App() {
