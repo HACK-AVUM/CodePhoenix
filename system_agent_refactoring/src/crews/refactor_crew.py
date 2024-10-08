@@ -3,14 +3,6 @@ from crewai import Agent, Task, Crew, Process
 from dotenv import load_dotenv
 
 
-# COMPITI
-# Di nuovo, testare con codice piu complesso, incollando nel main in basso codice e relativo output del microservizio di analisi
-# Eventualmente modificare agenti e task, o aggiungerne di nuovi, per rendere migliore il refactoring
-
-
-
-os.environ["TOGETHERAI_API_KEY"] = "c47b3fa9622715d6695302a193d0488be41d61660b82ca6502eb45c61efce2c9"
-llm = "together_ai/meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
 
 def refactoring_code(code, analysis_result):
     # Define agents for code refactoring
@@ -21,7 +13,7 @@ def refactoring_code(code, analysis_result):
         Your expertise lies in dissecting complex programs and understanding their core logic.""",
         verbose=True,
         allow_delegation=False,
-        llm=llm,
+        llm=os.environ["LLM"],
     )
 
     refactoring_expert = Agent(
@@ -31,7 +23,7 @@ def refactoring_code(code, analysis_result):
         You specialize in improving code quality, reducing complexity, and enhancing maintainability.""",
         verbose=True,
         allow_delegation=False,
-        llm=llm,
+        llm=os.environ["LLM"],
     )
 
     # Create tasks for code refactoring

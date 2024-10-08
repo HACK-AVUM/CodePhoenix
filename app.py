@@ -1,3 +1,12 @@
+import os
+os.environ["OTEL_SDK_DISABLED"] = "true"
+os.environ["TOGETHERAI_API_KEY"] = "c47b3fa9622715d6695302a193d0488be41d61660b82ca6502eb45c61efce2c9"
+
+os.environ["LLM"] = "together_ai/meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
+
+
+import subprocess
+from time import sleep
 from fastapi import FastAPI, UploadFile, BackgroundTasks
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,9 +19,10 @@ from system_agent_analysis.src.crews.quality_control_crew import analyze_code
 from system_agent_refactoring.src.crews.refactor_crew import refactoring_code
 from system_agent_test.app.services.test_service import perform_test
 from system_agent_scanning_vuln.app.services.scanning_vulnerability_service import perform_scan_vulnerability
-import os
+import requests
+from datetime import datetime, timezone
 
-os.environ["OTEL_SDK_DISABLED"] = "true"
+
 
 app = FastAPI()
 
@@ -117,41 +127,93 @@ async def get_task_status(task_id: str):
         return {"status": "not_found"}
     return task_results[task_id]
 
-async def process_zip_file(zip_contents: bytes, task_id: str):
-    # Create a ZipFile object from the in-memory file
-    with zipfile.ZipFile(io.BytesIO(zip_contents)) as zip_ref:
-        # Initialize an empty string to store all code
+
+def process_zip_file(zip_contents: bytes, task_id: str):
+    # Create a local directory to extract the zip contents
+    code_dir = "./code"
+    os.makedirs(code_dir, exist_ok=True)
+
+    try:
+        # Create a ZipFile object from the in-memory file and extract its contents
+        with zipfile.ZipFile(io.BytesIO(zip_contents)) as zip_ref:
+            zip_ref.extractall(code_dir)
+
+        # Run SonarQube scan
+        sonar_scanner_cmd = [
+            "sonar-scanner",
+            f"-Dsonar.projectKey=prova",
+            f"-Dsonar.sources={code_dir}",
+            "-Dsonar.host.url=http://sonarqube:9000",
+            "-Dsonar.token=sqp_638686bd282aa7716f2ae228a3a014f0e62e3ef1"
+        ]
+
+        scan_start_time = datetime.now(timezone.utc)
+
+        try:
+            process = subprocess.run(
+                sonar_scanner_cmd,
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            scan_result = process.stdout
+        except subprocess.CalledProcessError as e:
+            scan_result = f"Error SonarQube scan: {e.stderr}"
+        except Exception as e:
+            scan_result = f"Error running SonarQube scan: {str(e)}"
+
+        sleep(2)
+
+        # Process the code as before
         all_code = ""
-
-        # Iterate through all files in the zip
-        for file_name in zip_ref.namelist():
-            # Skip directories
-            if file_name.endswith('/'):
-                continue
-
-            # Read the content of each file
-            with zip_ref.open(file_name) as file:
+        for root, _, files in os.walk(code_dir):
+            for file_name in files:
+                file_path = os.path.join(root, file_name)
                 try:
-                    # Try to decode the file content as UTF-8
-                    code_content = file.read().decode('utf-8')
-                    # Append the code content to all_code with a separator
-                    all_code += f"\n\n# File: {file_name}\n\n{code_content}"
+                    with open(file_path, 'r', encoding='utf-8') as file:
+                        code_content = file.read()
+                        all_code += f"\n\n# File: {os.path.relpath(file_path, code_dir)}\n\n{code_content}"
                 except UnicodeDecodeError:
-                    # If decoding fails, it's likely a binary file, so we skip it
                     continue
 
-    # Process all the code as a single string
-    result = process_code_string(all_code)
-    print(f"##########Analysis Result##########\n{result['analysis_result']}\n\n\n\n"
-          f"##########Refactoring Result##########\n{result['refactoring_result']}\n\n\n\n"
-          f"##########Test Result##########\n{result['test_result']}\n\n\n\n"
-          f"##########Scan Result##########\n{result['scan_result']}")
+        # Fetch SonarQube results if scan was successful
+        if "Error" not in scan_result:
+            sonarqube_api_url = f"http://sonarqube:9000/api/issues/search?componentKeys=prova"
 
-    task_results[task_id] = {"status": "completed", "result": result}
+            print(sonarqube_api_url)
+
+            try:
+                headers = {
+                    "Authorization": "Bearer sqp_638686bd282aa7716f2ae228a3a014f0e62e3ef1"
+                }
+                response = requests.get(sonarqube_api_url, headers=headers)
+                if response.status_code == 200:
+                    sonarqube_results = response.json()
+                    all_code += f"\n\n# SonarQube Analysis Results\n\n{sonarqube_results}"
+                else:
+                    print(f"Failed to fetch SonarQube results: HTTP {response.status_code}")
+            except Exception as e:
+                print(f"Error fetching SonarQube results: {str(e)}")
+
+        # Process all the code as a single string
+        result = process_code_string(all_code)
+
+        print(f"##########Analysis Result##########\n{result['analysis_result']}\n\n\n\n"
+              f"##########Refactoring Result##########\n{result['refactoring_result']}\n\n\n\n"
+              f"##########Test Result##########\n{result['test_result']}\n\n\n\n"
+              f"##########Scan Result##########\n{result['scan_result']}")
+
+        task_results[task_id] = {"status": "completed", "result": result}
+
+    finally:
+        # Clean up: delete the local directory after analysis
+        import shutil
+        shutil.rmtree(code_dir, ignore_errors=True)
+
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=60000)
     result = process_code_string("""
 """)
     print(f"##########Analysis Result##########\n{result['analysis_result']}\n\n\n\n"

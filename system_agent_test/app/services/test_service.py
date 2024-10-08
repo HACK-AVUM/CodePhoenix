@@ -3,15 +3,6 @@ from crewai import Agent, Task, Crew, Process
 from dotenv import load_dotenv
 
 
-# COMPITI
-# Di nuovo, testare con codice piu complesso, incollando nel main in basso codice vecchio, relativa analisi e codice refattorizzato
-# Eventualmente modificare agenti e task, o aggiungerne di nuovi, per rendere migliore e piu precisa la fase di test
-
-
-
-os.environ["TOGETHERAI_API_KEY"] = "c47b3fa9622715d6695302a193d0488be41d61660b82ca6502eb45c61efce2c9"
-llm = "together_ai/meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
-
 def perform_test(old_code, old_code_analysis_result, new_code_to_test):
     # Define agents for testing
     code_tester = Agent(
@@ -21,17 +12,18 @@ def perform_test(old_code, old_code_analysis_result, new_code_to_test):
         Your role is to ensure that refactored code maintains the same functionality as the original.""",
         verbose=True,
         allow_delegation=False,
-        llm=llm,
+        llm=os.environ["LLM"],
     )
 
     performance_analyst = Agent(
         role='Performance Analyst',
         goal='Analyze and compare the performance of old and new code',
         backstory="""You are a performance optimization expert with a keen eye for efficiency improvements.
-        Your expertise lies in identifying performance bottlenecks and suggesting optimizations.""",
+        Your expertise lies in identifying performance bottlenecks and suggesting optimizations.
+        Don't fake doing test, but analyze complexity of the code and possible ways to optimize it.""",
         verbose=True,
         allow_delegation=False,
-        llm=llm,
+        llm=os.environ["LLM"],
     )
 
     # Create tasks for testing

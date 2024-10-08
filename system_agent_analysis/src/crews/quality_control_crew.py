@@ -3,13 +3,7 @@ import os
 from crewai import Agent, Task, Crew, Process
 from dotenv import load_dotenv
 
-os.environ["TOGETHERAI_API_KEY"] = "c47b3fa9622715d6695302a193d0488be41d61660b82ca6502eb45c61efce2c9"
-llm = "together_ai/meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
-
-
-# Funzione per analizzare il codice legacy
 def analyze_code(code):
-    # Define agents for legacy code analysis
     code_analyst = Agent(
         role='Legacy Code Analyst',
         goal='Analyze and understand legacy code structure and functionality',
@@ -17,7 +11,7 @@ def analyze_code(code):
         Your expertise lies in dissecting complex programs and understanding their core logic.""",
         verbose=True,
         allow_delegation=False,
-        llm=llm,
+        llm=os.environ["LLM"],
     )
 
     complexity_assessor = Agent(
@@ -27,7 +21,7 @@ def analyze_code(code):
         You specialize in assessing code complexity across different languages and providing actionable insights.""",
         verbose=True,
         allow_delegation=False,
-        llm=llm,
+        llm=os.environ["LLM"],
     )
 
     # Create tasks for legacy code analysis

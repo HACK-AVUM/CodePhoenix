@@ -20,8 +20,9 @@ function App() {
     const formData = new FormData()
     formData.append('zip_file', file)
 
+    setStatus('processing')
     try {
-      const response = await fetch('http://localhost:8000/process-zip', {
+      const response = await fetch('http://localhost:60000/process-zip', {
         method: 'POST',
         body: formData,
       })
@@ -32,7 +33,6 @@ function App() {
 
       const data = await response.json()
       setTaskId(data.task_id)
-      setStatus('processing')
     } catch (error) {
       console.error('Error processing ZIP file:', error)
       setResult(JSON.stringify({ error: 'Failed to process ZIP file' }, null, 2))
@@ -43,7 +43,7 @@ function App() {
     const pollTaskStatus = async () => {
       if (taskId && status === 'processing') {
         try {
-          const response = await fetch(`http://localhost:8000/task/${taskId}`)
+          const response = await fetch(`http://localhost:60000/task/${taskId}`)
           const data = await response.json()
 
           if (data.status === 'completed') {

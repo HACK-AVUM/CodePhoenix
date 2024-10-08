@@ -1,12 +1,12 @@
-version: '3'
-
 services:
-  fastapi-app:
+  app:
     build: .
     ports:
-      - "8000:8000"
+      - "60000:60000"  # FastAPI
     depends_on:
       - sonarqube
+    networks:
+      - sonarnet
 
   sonarqube:
     image: sonarqube:latest
@@ -14,3 +14,9 @@ services:
       - "9000:9000"
     environment:
       - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    networks:
+      - sonarnet
+
+networks:
+  sonarnet:
+    driver: bridge
