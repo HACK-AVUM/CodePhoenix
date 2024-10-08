@@ -9,8 +9,6 @@ import ResultSection from './components/ResultSection'
 import ReactMarkdown from 'react-markdown'
 
 
-
-
 function App() {
   const [result, setResult] = useState<string | null>(null)
   const [taskId, setTaskId] = useState<string | null>(null)
