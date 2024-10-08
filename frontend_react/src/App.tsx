@@ -17,6 +17,9 @@ function App() {
   const [status, setStatus] = useState<string | null>(null)
 
   const handleFileUpload = async (file: File) => {
+    setTaskId(null)
+    setStatus(null)
+    setResult(null)
     const formData = new FormData()
     formData.append('zip_file', file)
 

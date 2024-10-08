@@ -3,7 +3,7 @@ from crewai import Agent, Task, Crew, Process
 from dotenv import load_dotenv
 
 
-def perform_test(old_code, old_code_analysis_result, new_code_to_test):
+def perform_test(old_code, old_code_analysis_result, new_code_to_test, binary_response=False):
     # Define agents for testing
     code_tester = Agent(
         role='Code Tester',
@@ -15,43 +15,22 @@ def perform_test(old_code, old_code_analysis_result, new_code_to_test):
         llm=os.environ["LLM"],
     )
 
-    performance_analyst = Agent(
-        role='Performance Analyst',
-        goal='Analyze and compare the performance of old and new code',
-        backstory="""You are a performance optimization expert with a keen eye for efficiency improvements.
-        Your expertise lies in identifying performance bottlenecks and suggesting optimizations.
-        Don't fake doing test, but analyze complexity of the code and possible ways to optimize it.""",
-        verbose=True,
-        allow_delegation=False,
-        llm=os.environ["LLM"],
-    )
-
     # Create tasks for testing
     task1 = Task(
         description=f"""Compare the functionality of the old and new code.
         Ensure that the refactored code produces the same output as the original code for various inputs.
+        I forbit you from fake testing the code, but instead, just analyze the code and say if the refactored code has the same functionality as the original code or not, without any unit testing.
         Old Code: {old_code},
         Old Code Analysis Result: {old_code_analysis_result},
         New Code: {new_code_to_test}""",
-        expected_output="Detailed report on functional equivalence and any discrepancies",
+        expected_output="Detailed report on functional equivalence and any discrepancies" if not binary_response else "A single binary number, 0 or 1, indicating if the refactored code has DIFFERENT functionality than the original code.",
         agent=code_tester,
-    )
-
-    task2 = Task(
-        description=f"""Analyze the performance characteristics of both the old and new code.
-        Compare execution time, memory usage, and overall efficiency.
-        Consider the complexity assessment from the analysis result.
-        Old Code: {old_code},
-        Old Code Analysis Result: {old_code_analysis_result},
-        New Code: {new_code_to_test}""",
-        expected_output="Comprehensive performance comparison report with optimization suggestions",
-        agent=performance_analyst
     )
 
     # Instantiate the crew for testing
     testing_crew = Crew(
-        agents=[code_tester, performance_analyst],
-        tasks=[task1, task2],
+        agents=[code_tester],
+        tasks=[task1],
         verbose=True,
         process=Process.sequential
     )

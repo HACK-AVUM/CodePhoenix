@@ -3,7 +3,7 @@ import os
 from crewai import Agent, Task, Crew, Process
 from dotenv import load_dotenv
 
-def analyze_code(code):
+def analyze_code(code, number_response=False):
     code_analyst = Agent(
         role='Legacy Code Analyst',
         goal='Analyze and understand legacy code structure and functionality',
@@ -37,7 +37,7 @@ def analyze_code(code):
         description=f"""Using the insights from the code analysis, assess the overall complexity of the legacy codebase.
         Provide metrics and recommendations for refactoring priorities.
         Code: {code}""",
-        expected_output="Comprehensive complexity assessment report with refactoring suggestions",
+        expected_output="Comprehensive complexity assessment report with refactoring suggestions" if not number_response else "A single digit number, from 0 to 9 inclusive, indicating the complexity of the code.",
         agent=complexity_assessor
     )
 

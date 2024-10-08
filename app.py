@@ -1,4 +1,5 @@
 import os
+
 os.environ["OTEL_SDK_DISABLED"] = "true"
 os.environ["TOGETHERAI_API_KEY"] = "c47b3fa9622715d6695302a193d0488be41d61660b82ca6502eb45c61efce2c9"
 
@@ -74,32 +75,20 @@ async def scan_vulnerabilities_endpoint(code_input: CodeInput):
 #         raise HTTPException(status_code=response.status_code, detail="Documentation generation service error")
 #     return ServiceResponse(status="success", result=response.json())
 
-@app.post("/process-code")
-async def process_code_endpoint(code_input: CodeInput):
-    analysis_result = await analyze_code(code_input)
-    refactoring_result = await refactoring_code(code_input, analysis_result)
-    test_result = await perform_test(code_input, analysis_result, refactoring_result)
-    scan_result = await perform_scan_vulnerability(code_input)
-
-    return {
-        "analysis_result": analysis_result,
-        "refactoring_result": refactoring_result,
-        "test_result": test_result,
-        "scan_result": scan_result
-    }
-
 
 def process_code_string(code: str) -> Dict[str, Any]:
     analysis_result = analyze_code(code)
+    scan_result = perform_scan_vulnerability(code)
     refactoring_result = refactoring_code(code, analysis_result)
     test_result = perform_test(code, analysis_result, refactoring_result)
-    scan_result = perform_scan_vulnerability(code)
+
+
 
     return {
         "analysis_result": analysis_result,
+        "scan_result": scan_result,
         "refactoring_result": refactoring_result,
         "test_result": test_result,
-        "scan_result": scan_result
     }
 
 
@@ -147,8 +136,6 @@ def process_zip_file(zip_contents: bytes, task_id: str):
             "-Dsonar.token=sqp_638686bd282aa7716f2ae228a3a014f0e62e3ef1"
         ]
 
-        scan_start_time = datetime.now(timezone.utc)
-
         try:
             process = subprocess.run(
                 sonar_scanner_cmd,
@@ -195,8 +182,33 @@ def process_zip_file(zip_contents: bytes, task_id: str):
             except Exception as e:
                 print(f"Error fetching SonarQube results: {str(e)}")
 
-        # Process all the code as a single string
-        result = process_code_string(all_code)
+
+
+
+        result = {}
+
+        difficulty_rating = analyze_code(all_code, number_response=True)
+
+
+        result["LLM used"] = "Llama 3.1 7B Instruct"
+
+        try:
+            difficulty = int(difficulty_rating)
+            if difficulty > 7:
+                print(f"Code difficulty: {difficulty}")
+                os.environ["LLM"] = "together_ai/meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo"
+                result["LLM used"] = "Llama 3.1 70B Instruct"
+        except ValueError:
+            print("Invalid difficulty rating")
+
+
+        result.update(process_code_string(all_code))
+
+        to_repeat = perform_test(all_code, result["analysis_result"], result["refactoring_result"], binary_response=True)
+        if to_repeat == "1":
+            print("Repeating the task")
+            result.update(process_code_string(all_code))
+
 
         print(f"##########Analysis Result##########\n{result['analysis_result']}\n\n\n\n"
               f"##########Refactoring Result##########\n{result['refactoring_result']}\n\n\n\n"
