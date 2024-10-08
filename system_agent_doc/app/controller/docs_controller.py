@@ -43,11 +43,6 @@ def generate_documentation_controller():
     return jsonify({'error' : 'The file was not uploaded'}), 500
 
 
-
-
-
-
-
 @app.route('/create-pdf-crew', methods=['POST'])
 def create_pdf_crew_controller():
 

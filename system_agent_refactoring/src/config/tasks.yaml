@@ -1,0 +1,14 @@
+## Definisce i task specifici per suggerire e applicare refactor.
+suggest_refactor_task:
+  description: >
+    Analyze the code and suggest improvements based on best practices.
+  expected_output: >
+    Suggestions for refactoring the code, improving readability and maintainability.
+  agent: code_refactor
+
+apply_refactor_task:
+  description: >
+    Apply the suggested refactoring changes to the codebase.
+  expected_output: >
+    The refactored code, optimized for readability and maintainability.
+  agent: code_refactor

@@ -1,0 +1,28 @@
+services:
+  app:
+    build: .
+    ports:
+      - "60000:60000"  # FastAPI
+    depends_on:
+      - sonarqube
+    networks:
+      - sonarnet
+
+  sonarqube:
+    image: sonarqube:latest
+    ports:
+      - "9000:9000"
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    networks:
+      - sonarnet
+
+  react:
+    build: ./frontend_react
+    ports:
+      - "3000:3000"
+
+
+networks:
+  sonarnet:
+    driver: bridge

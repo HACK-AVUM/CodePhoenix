@@ -1,0 +1,65 @@
+# Dockerfile per il microservizio di analisi del codice
+
+# Step 1: Usare un'immagine base Python con Java 17
+FROM python:3.12-slim
+
+# Step 2: Installare OpenJDK 17 e altre dipendenze
+RUN apt-get update && apt-get install -y \
+    apt-transport-https \
+    && apt-get update && apt-get install -y \
+    openjdk-17-jdk \
+    python3 \
+    curl \
+    g++ \
+    make \
+    wget \
+    unzip \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
+# Aggiornare pip
+RUN pip install --upgrade pip
+
+# Step 3: Installare SonarQube
+ENV SONARQUBE_VERSION=9.5.0.56709
+ENV SONARQUBE_HOME=/opt/sonarqube
+
+RUN mkdir -p $SONARQUBE_HOME && \
+    wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-${SONARQUBE_VERSION}.zip -O /tmp/sonarqube.zip && \
+    unzip /tmp/sonarqube.zip -d /opt && \
+    mv /opt/sonarqube-${SONARQUBE_VERSION}/* $SONARQUBE_HOME && \
+    rm /tmp/sonarqube.zip
+
+# Step 4: Installare SonarScanner
+ENV SONAR_SCANNER_VERSION=4.6.2.2472
+ENV SONAR_SCANNER_HOME=/opt/sonarscanner
+
+RUN mkdir -p $SONAR_SCANNER_HOME && \
+    wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-linux.zip -O /tmp/sonarscanner.zip && \
+    unzip /tmp/sonarscanner.zip -d /opt && \
+    mv /opt/sonar-scanner-${SONAR_SCANNER_VERSION}-linux/* $SONAR_SCANNER_HOME && \
+    rm /tmp/sonarscanner.zip
+
+# Step 5: Installare le dipendenze Python
+WORKDIR /system_agent_analysis
+
+# Copy the requirements.txt file into the container at /app
+COPY requirements.txt requirements.txt
+
+# Install the dependencies specified in requirements.txt
+RUN pip install -r requirements.txt
+
+# Step 8: Copiare tutto il codice sorgente nella working directory
+COPY . .
+
+# Step 9: Copiare il file start.sh e renderlo eseguibile
+
+COPY start.sh start.sh
+RUN chmod +x start.sh
+
+# Expose port 8000 to allow traffic outside the container to reach the application
+EXPOSE 8000
+
+# Command to run the application using uvicorn
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000","--reload"]
+
