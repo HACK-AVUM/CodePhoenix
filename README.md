@@ -84,7 +84,7 @@ Dopo aver configurato SonarQube, puoi accedere al frontend dell'applicazione nav
 http://localhost:3000
 ```
 
-## Note Aggiuntive
+### Note Aggiuntive
 
 - Per arrestare l'applicazione, premi `Ctrl+C` nel terminale dove hai eseguito `docker compose up`.
 - Per eseguire l'applicazione in background, usa il comando `docker compose up -d`.
