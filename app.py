@@ -1,9 +1,11 @@
-from textwrap import dedent
-
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, BackgroundTasks
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict, Any
-
+import zipfile
+import io
+from fastapi import UploadFile
+import uuid
 from system_agent_analysis.src.crews.quality_control_crew import analyze_code
 from system_agent_refactoring.src.crews.refactor_crew import refactoring_code
 from system_agent_test.app.services.test_service import perform_test
@@ -13,6 +15,15 @@ import os
 os.environ["OTEL_SDK_DISABLED"] = "true"
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
+
 
 class CodeInput(BaseModel):
     code: str
@@ -81,136 +92,67 @@ def process_code_string(code: str) -> Dict[str, Any]:
         "scan_result": scan_result
     }
 
+
+task_results = {}
+
+class TaskStatus(BaseModel):
+    status: str
+    result: dict = None
+
+@app.post("/process-zip")
+async def process_zip_endpoint(zip_file: UploadFile, background_tasks: BackgroundTasks):
+    task_id = str(uuid.uuid4())
+    task_results[task_id] = {"status": "processing"}
+
+    # Read the uploaded file into memory
+    zip_contents = await zip_file.read()
+
+    background_tasks.add_task(process_zip_file, zip_contents, task_id)
+
+    return {"task_id": task_id}
+
+@app.get("/task/{task_id}", response_model=TaskStatus)
+async def get_task_status(task_id: str):
+    if task_id not in task_results:
+        return {"status": "not_found"}
+    return task_results[task_id]
+
+async def process_zip_file(zip_contents: bytes, task_id: str):
+    # Create a ZipFile object from the in-memory file
+    with zipfile.ZipFile(io.BytesIO(zip_contents)) as zip_ref:
+        # Initialize an empty string to store all code
+        all_code = ""
+
+        # Iterate through all files in the zip
+        for file_name in zip_ref.namelist():
+            # Skip directories
+            if file_name.endswith('/'):
+                continue
+
+            # Read the content of each file
+            with zip_ref.open(file_name) as file:
+                try:
+                    # Try to decode the file content as UTF-8
+                    code_content = file.read().decode('utf-8')
+                    # Append the code content to all_code with a separator
+                    all_code += f"\n\n# File: {file_name}\n\n{code_content}"
+                except UnicodeDecodeError:
+                    # If decoding fails, it's likely a binary file, so we skip it
+                    continue
+
+    # Process all the code as a single string
+    result = process_code_string(all_code)
+    print(f"##########Analysis Result##########\n{result['analysis_result']}\n\n\n\n"
+          f"##########Refactoring Result##########\n{result['refactoring_result']}\n\n\n\n"
+          f"##########Test Result##########\n{result['test_result']}\n\n\n\n"
+          f"##########Scan Result##########\n{result['scan_result']}")
+
+    task_results[task_id] = {"status": "completed", "result": result}
+
 if __name__ == "__main__":
-    # import uvicorn
-    # uvicorn.run(app, host="0.0.0.0", port=8000)
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
     result = process_code_string("""
-           IDENTIFICATION DIVISION.
-       PROGRAM-ID. INVENTORY-MANAGEMENT.
-
-       ENVIRONMENT DIVISION.
-       INPUT-OUTPUT SECTION.
-       FILE-CONTROL.
-           SELECT PRODUCT-FILE ASSIGN TO "PRODUCTS.DAT"
-               ORGANIZATION IS LINE SEQUENTIAL.
-
-       DATA DIVISION.
-       FILE SECTION.
-       FD  PRODUCT-FILE.
-       01  PRODUCT-RECORD.
-           05  PRODUCT-ID       PIC 9(5).
-           05  PRODUCT-NAME     PIC X(30).
-           05  PRODUCT-QUANTITY PIC 9(5).
-           05  PRODUCT-PRICE    PIC 9(5)V99.
-
-       WORKING-STORAGE SECTION.
-       77  WS-OPTION           PIC 9.
-       77  WS-PRODUCT-ID       PIC 9(5).
-       77  WS-PRODUCT-NAME     PIC X(30).
-       77  WS-PRODUCT-QUANTITY PIC 9(5).
-       77  WS-PRODUCT-PRICE    PIC 9(5)V99.
-       77  WS-EOF              PIC X VALUE 'N'.
-
-       PROCEDURE DIVISION.
-       MAIN-PARA.
-           PERFORM INIT-PARA.
-           PERFORM UNTIL WS-OPTION = 4
-               DISPLAY "MENU OPTIONS"
-               DISPLAY "1. ADD PRODUCT"
-               DISPLAY "2. UPDATE PRODUCT"
-               DISPLAY "3. VIEW ALL PRODUCTS"
-               DISPLAY "4. EXIT"
-               ACCEPT WS-OPTION
-               EVALUATE WS-OPTION
-                   WHEN 1
-                       PERFORM ADD-PRODUCT-PARA
-                   WHEN 2
-                       PERFORM UPDATE-PRODUCT-PARA
-                   WHEN 3
-                       PERFORM VIEW-PRODUCTS-PARA
-                   WHEN 4
-                       DISPLAY "EXITING PROGRAM."
-                   WHEN OTHER
-                       DISPLAY "INVALID OPTION. TRY AGAIN."
-               END-EVALUATE
-           END-PERFORM.
-           STOP RUN.
-
-       INIT-PARA.
-           OPEN I-O PRODUCT-FILE
-           IF STATUS-CODE NOT = 0
-               DISPLAY "ERROR OPENING FILE."
-               STOP RUN
-           END-IF.
-
-       ADD-PRODUCT-PARA.
-           DISPLAY "ENTER PRODUCT ID: " 
-           ACCEPT WS-PRODUCT-ID
-           DISPLAY "ENTER PRODUCT NAME: " 
-           ACCEPT WS-PRODUCT-NAME
-           DISPLAY "ENTER PRODUCT QUANTITY: " 
-           ACCEPT WS-PRODUCT-QUANTITY
-           DISPLAY "ENTER PRODUCT PRICE: " 
-           ACCEPT WS-PRODUCT-PRICE
-
-           MOVE WS-PRODUCT-ID TO PRODUCT-ID
-           MOVE WS-PRODUCT-NAME TO PRODUCT-NAME
-           MOVE WS-PRODUCT-QUANTITY TO PRODUCT-QUANTITY
-           MOVE WS-PRODUCT-PRICE TO PRODUCT-PRICE
-
-           WRITE PRODUCT-RECORD
-               DISPLAY "PRODUCT ADDED."
-
-       UPDATE-PRODUCT-PARA.
-           DISPLAY "ENTER PRODUCT ID TO UPDATE: "
-           ACCEPT WS-PRODUCT-ID
-           PERFORM FIND-PRODUCT
-
-           IF WS-EOF = 'Y'
-               DISPLAY "PRODUCT NOT FOUND."
-           ELSE
-               DISPLAY "ENTER NEW PRODUCT NAME: "
-               ACCEPT WS-PRODUCT-NAME
-               DISPLAY "ENTER NEW PRODUCT QUANTITY: "
-               ACCEPT WS-PRODUCT-QUANTITY
-               DISPLAY "ENTER NEW PRODUCT PRICE: "
-               ACCEPT WS-PRODUCT-PRICE
-
-               MOVE WS-PRODUCT-ID TO PRODUCT-ID
-               MOVE WS-PRODUCT-NAME TO PRODUCT-NAME
-               MOVE WS-PRODUCT-QUANTITY TO PRODUCT-QUANTITY
-               MOVE WS-PRODUCT-PRICE TO PRODUCT-PRICE
-
-               REWRITE PRODUCT-RECORD
-                   DISPLAY "PRODUCT UPDATED."
-           END-IF.
-
-       VIEW-PRODUCTS-PARA.
-           DISPLAY "PRODUCT LIST:"
-           PERFORM UNTIL WS-EOF = 'Y'
-               READ PRODUCT-FILE INTO PRODUCT-RECORD
-                   AT END
-                       MOVE 'Y' TO WS-EOF
-                   NOT AT END
-                       DISPLAY "ID: " PRODUCT-ID " NAME: " PRODUCT-NAME
-                           " QUANTITY: " PRODUCT-QUANTITY
-                           " PRICE: " PRODUCT-PRICE
-               END-READ
-           END-PERFORM.
-
-       FIND-PRODUCT.
-           MOVE 'N' TO WS-EOF
-           REWRITE PRODUCT-RECORD
-           PERFORM UNTIL WS-EOF = 'Y'
-               READ PRODUCT-FILE INTO PRODUCT-RECORD
-                   AT END
-                       MOVE 'Y' TO WS-EOF
-                   NOT AT END
-                       IF WS-PRODUCT-ID = PRODUCT-ID
-                           EXIT PERFORM
-                       END-IF
-               END-READ
-           END-PERFORM.
 """)
     print(f"##########Analysis Result##########\n{result['analysis_result']}\n\n\n\n"
           f"##########Refactoring Result##########\n{result['refactoring_result']}\n\n\n\n"
