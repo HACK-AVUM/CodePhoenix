@@ -7,7 +7,7 @@ os.environ["LLM"] = "together_ai/meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
 
 import subprocess
 from time import sleep
-from fastapi import FastAPI, UploadFile, BackgroundTasks
+from fastapi import FastAPI, Form, UploadFile, BackgroundTasks
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict, Any
@@ -100,7 +100,10 @@ class TaskStatus(BaseModel):
     result: dict = None
 
 @app.post("/process-zip")
-async def process_zip_endpoint(zip_file: UploadFile, background_tasks: BackgroundTasks):
+async def process_zip_endpoint(zip_file: UploadFile, background_tasks: BackgroundTasks , sonarqube_token: str = Form(None)):
+    if sonarqube_token:
+        os.environ["SONARQUBE_TOKEN"] = sonarqube_token
+
     task_id = str(uuid.uuid4())
     task_results[task_id] = {"status": "processing"}
 
@@ -123,34 +126,36 @@ def process_zip_file(zip_contents: bytes, task_id: str):
     code_dir = "./code"
     os.makedirs(code_dir, exist_ok=True)
 
+
     try:
         # Create a ZipFile object from the in-memory file and extract its contents
         with zipfile.ZipFile(io.BytesIO(zip_contents)) as zip_ref:
             zip_ref.extractall(code_dir)
 
-        # Run SonarQube scan
-        sonar_scanner_cmd = [
-            "sonar-scanner",
-            f"-Dsonar.projectKey=prova",
-            f"-Dsonar.sources={code_dir}",
-            "-Dsonar.host.url=http://sonarqube:9000",
-            f"-Dsonar.token={os.environ['SONARQUBE_TOKEN']}"
-        ]
+        if 'SONARQUBE_TOKEN' in os.environ and os.environ['SONARQUBE_TOKEN']:
+            # Run SonarQube scan
+            sonar_scanner_cmd = [
+                "sonar-scanner",
+                f"-Dsonar.projectKey=prova",
+                f"-Dsonar.sources={code_dir}",
+                "-Dsonar.host.url=http://sonarqube:9000",
+                f"-Dsonar.token={os.environ['SONARQUBE_TOKEN']}"
+            ]
 
-        try:
-            process = subprocess.run(
-                sonar_scanner_cmd,
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            scan_result = process.stdout
-        except subprocess.CalledProcessError as e:
-            scan_result = f"Error SonarQube scan: {e.stderr}"
-        except Exception as e:
-            scan_result = f"Error running SonarQube scan: {str(e)}"
+            try:
+                process = subprocess.run(
+                    sonar_scanner_cmd,
+                    capture_output=True,
+                    text=True,
+                    check=True
+                )
+                scan_result = process.stdout
+            except subprocess.CalledProcessError as e:
+                scan_result = f"Error SonarQube scan: {e.stderr}"
+            except Exception as e:
+                scan_result = f"Error running SonarQube scan: {str(e)}"
 
-        sleep(2)
+            sleep(2)
 
         # Process the code as before
         all_code = ""
@@ -164,26 +169,24 @@ def process_zip_file(zip_contents: bytes, task_id: str):
                 except UnicodeDecodeError:
                     continue
 
-        # Fetch SonarQube results if scan was successful
-        if "Error" not in scan_result:
-            sonarqube_api_url = f"http://sonarqube:9000/api/issues/search?componentKeys=prova"
+        if 'SONARQUBE_TOKEN' in os.environ and os.environ['SONARQUBE_TOKEN']:
+            if "Error" not in scan_result:
+                sonarqube_api_url = f"http://sonarqube:9000/api/issues/search?componentKeys=prova"
 
-            print(sonarqube_api_url)
+                print(sonarqube_api_url)
 
-            try:
-                headers = {
-                    "Authorization": f"Bearer {os.environ['SONARQUBE_TOKEN']}"
-                }
-                response = requests.get(sonarqube_api_url, headers=headers)
-                if response.status_code == 200:
-                    sonarqube_results = response.json()
-                    all_code += f"\n\n# SonarQube Analysis Results\n\n{sonarqube_results}"
-                else:
-                    print(f"Failed to fetch SonarQube results: HTTP {response.status_code}")
-            except Exception as e:
-                print(f"Error fetching SonarQube results: {str(e)}")
-
-
+                try:
+                    headers = {
+                        "Authorization": f"Bearer {os.environ['SONARQUBE_TOKEN']}"
+                    }
+                    response = requests.get(sonarqube_api_url, headers=headers)
+                    if response.status_code == 200:
+                        sonarqube_results = response.json()
+                        all_code += f"\n\n# SonarQube Analysis Results\n\n{sonarqube_results}"
+                    else:
+                        print(f"Failed to fetch SonarQube results: HTTP {response.status_code}")
+                except Exception as e:
+                    print(f"Error fetching SonarQube results: {str(e)}")
 
 
         result = {}

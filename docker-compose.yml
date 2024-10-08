@@ -17,6 +17,12 @@ services:
     networks:
       - sonarnet
 
+  react:
+    build: ./frontend_react
+    ports:
+      - "3000:3000"
+
+
 networks:
   sonarnet:
     driver: bridge
