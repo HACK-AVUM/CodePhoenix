@@ -62,7 +62,7 @@ function App() {
     pollTaskStatus()
   }, [taskId, status])
 
-  setShowSonarQubeToken(true);
+  setShowSonarQubeToken(false);
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -86,7 +86,7 @@ function App() {
           )}
         </div>
         <FileUploader onFileUpload={handleFileUpload} />
-        {status === 'processing' && <p>Processing... Please wait.</p>}
+        {status === 'processing' && <p>Elaborazione in corso... Attendere. Il processo può richiedere fino a 5 minuti.</p>}
         <ResultDisplay result={result} />
       </div>
     </div>

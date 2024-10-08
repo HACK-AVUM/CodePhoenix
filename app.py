@@ -101,6 +101,8 @@ class TaskStatus(BaseModel):
 
 @app.post("/process-zip")
 async def process_zip_endpoint(zip_file: UploadFile, background_tasks: BackgroundTasks , sonarqube_token: str = Form(None)):
+    load_dotenv()
+
     if sonarqube_token:
         os.environ["SONARQUBE_TOKEN"] = sonarqube_token
 
@@ -136,7 +138,7 @@ def process_zip_file(zip_contents: bytes, task_id: str):
             # Run SonarQube scan
             sonar_scanner_cmd = [
                 "sonar-scanner",
-                f"-Dsonar.projectKey=prova",
+                f"-Dsonar.projectKey=project",
                 f"-Dsonar.sources={code_dir}",
                 "-Dsonar.host.url=http://sonarqube:9000",
                 f"-Dsonar.token={os.environ['SONARQUBE_TOKEN']}"
@@ -171,7 +173,7 @@ def process_zip_file(zip_contents: bytes, task_id: str):
 
         if 'SONARQUBE_TOKEN' in os.environ and os.environ['SONARQUBE_TOKEN']:
             if "Error" not in scan_result:
-                sonarqube_api_url = f"http://sonarqube:9000/api/issues/search?componentKeys=prova"
+                sonarqube_api_url = f"http://sonarqube:9000/api/issues/search?componentKeys=project"
 
                 print(sonarqube_api_url)
 

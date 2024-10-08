@@ -57,15 +57,15 @@ Questo comando avvierà tutti i servizi definiti nel file `docker-compose.yml`.
 
 ## Configurazione di SonarQube
 
-Dopo aver avviato l'applicazione e aver visto il messaggio `SonarQube is operative.`, segui questi passaggi per configurare SonarQube:
+Dopo aver avviato l'applicazione e aver visto il messaggio `SonarQube is operational`, segui questi passaggi per configurare SonarQube:
 
 1. Apri il browser e vai su `http://localhost:9000`
 2. Accedi con le credenziali predefinite:
    - Username: `admin`
    - Password: `admin`
 3. Segui le istruzioni per cambiare la password al primo accesso
-4. Crea un nuovo progetto chiamato "prova"
-5. Genera un token per questo progetto
+4. Crea un nuovo progetto locale chiamato "project", usando le "global settings"
+5. Genera un token per questo progetto per l'analisi locale
 6. Copia il token generato
 7. Apri il file `.env` nella directory principale del progetto
 8. Aggiungi la seguente riga, sostituendo `<TUO_TOKEN_SONARQUBE>` con il token copiato:
@@ -76,9 +76,17 @@ Dopo aver avviato l'applicazione e aver visto il messaggio `SonarQube is operati
 
 9. Salva e chiudi il file `.env`
 
+## Riavvio dell'Applicazione
+
+Dopo aver configurato SonarQube, per applicare le nuove configurazioni, fermare l'applicazione con `Ctrl+C`, poi ricompilarla e riavviarla con il seguente comando:
+
+```bash
+docker-compose build && docker-compose up
+```
+
 ## Accesso all'Applicazione
 
-Dopo aver configurato SonarQube, puoi accedere al frontend dell'applicazione navigando nel tuo browser web a:
+Dopo aver configurato SonarQube e riavviato l'applicazione, puoi accedere al frontend dell'applicazione navigando nel tuo browser web a:
 
 ```
 http://localhost:3000
