@@ -1,7 +1,6 @@
 import os
 
 os.environ["OTEL_SDK_DISABLED"] = "true"
-os.environ["TOGETHERAI_API_KEY"] = "c47b3fa9622715d6695302a193d0488be41d61660b82ca6502eb45c61efce2c9"
 
 os.environ["LLM"] = "together_ai/meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
 
@@ -21,7 +20,9 @@ from system_agent_refactoring.src.crews.refactor_crew import refactoring_code
 from system_agent_test.app.services.test_service import perform_test
 from system_agent_scanning_vuln.app.services.scanning_vulnerability_service import perform_scan_vulnerability
 import requests
-from datetime import datetime, timezone
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 
@@ -133,7 +134,7 @@ def process_zip_file(zip_contents: bytes, task_id: str):
             f"-Dsonar.projectKey=prova",
             f"-Dsonar.sources={code_dir}",
             "-Dsonar.host.url=http://sonarqube:9000",
-            "-Dsonar.token=sqp_638686bd282aa7716f2ae228a3a014f0e62e3ef1"
+            f"-Dsonar.token={os.environ['SONARQUBE_TOKEN']}"
         ]
 
         try:
@@ -171,7 +172,7 @@ def process_zip_file(zip_contents: bytes, task_id: str):
 
             try:
                 headers = {
-                    "Authorization": "Bearer sqp_638686bd282aa7716f2ae228a3a014f0e62e3ef1"
+                    "Authorization": f"Bearer {os.environ['SONARQUBE_TOKEN']}"
                 }
                 response = requests.get(sonarqube_api_url, headers=headers)
                 if response.status_code == 200:
