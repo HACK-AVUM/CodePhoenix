@@ -3,13 +3,11 @@ import Navbar from './components/Navbar'
 import FileUploader from './components/FileUploader'
 import ResultDisplay from './components/ResultDisplay'
 
-
-
-
 function App() {
   const [result, setResult] = useState<string | null>(null)
   const [taskId, setTaskId] = useState<string | null>(null)
   const [status, setStatus] = useState<string | null>(null)
+  const [docFormat, setDocFormat] = useState<string>('pdf')
 
   const handleFileUpload = async (file: File) => {
     setTaskId(null)
@@ -17,6 +15,7 @@ function App() {
     setResult(null)
     const formData = new FormData()
     formData.append('zip_file', file)
+    formData.append('doc_format', docFormat)
 
     setStatus('processing')
     try {
@@ -67,6 +66,19 @@ function App() {
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <Navbar />
       <div className="flex-grow flex flex-col items-center justify-center p-4">
+        <div className="mb-4">
+          <label htmlFor="docFormat" className="mr-2">Formato della documentazione:</label>
+          <select
+            id="docFormat"
+            value={docFormat}
+            onChange={(e) => setDocFormat(e.target.value)}
+            className="border rounded p-1"
+          >
+            <option value="pdf">PDF</option>
+            <option value="markdown">Markdown</option>
+            <option value="html">HTML</option>
+          </select>
+        </div>
         <FileUploader onFileUpload={handleFileUpload} />
         {status === 'processing' && <p>Elaborazione in corso... Attendere. Il processo può richiedere fino a 5 minuti.</p>}
         <ResultDisplay result={result} />

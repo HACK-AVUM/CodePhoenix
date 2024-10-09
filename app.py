@@ -101,7 +101,7 @@ class TaskStatus(BaseModel):
     result: dict = None
 
 @app.post("/process-zip")
-async def process_zip_endpoint(zip_file: UploadFile, background_tasks: BackgroundTasks , sonarqube_token: str = Form(None)):
+async def process_zip_endpoint(zip_file: UploadFile, background_tasks: BackgroundTasks, doc_format: str = Form(...), sonarqube_token: str = Form(None)):
     load_dotenv()
 
     if sonarqube_token:
@@ -113,7 +113,7 @@ async def process_zip_endpoint(zip_file: UploadFile, background_tasks: Backgroun
     # Read the uploaded file into memory
     zip_contents = await zip_file.read()
 
-    background_tasks.add_task(process_zip_file, zip_contents, task_id)
+    background_tasks.add_task(process_zip_file, zip_contents, doc_format, task_id)
 
     return {"task_id": task_id}
 
@@ -127,7 +127,7 @@ async def get_task_status(task_id: str):
 code_folder_lock = threading.Lock()
 
 
-def process_zip_file(zip_contents: bytes, task_id: str):
+def process_zip_file(zip_contents: bytes, doc_format: str, task_id: str):
     # Create a local directory to extract the zip contents
 
     with code_folder_lock:  # Acquire the lock
