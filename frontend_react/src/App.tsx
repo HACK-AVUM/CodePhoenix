@@ -9,6 +9,9 @@ function App() {
   const [status, setStatus] = useState<string | null>(null)
   const [docFormat, setDocFormat] = useState<string>('pdf')
 
+  let domain = window.location.origin;
+  domain = domain.split(':')[0];
+
   const handleFileUpload = async (file: File) => {
     setTaskId(null)
     setStatus(null)
@@ -19,7 +22,7 @@ function App() {
 
     setStatus('processing')
     try {
-      const response = await fetch('http://localhost:60000/process-zip', {
+      const response = await fetch(`${domain}:60000/process-zip`, {
         method: 'POST',
         body: formData,
       })
@@ -40,7 +43,7 @@ function App() {
     const pollTaskStatus = async () => {
       if (taskId && status === 'processing') {
         try {
-          const response = await fetch(`http://localhost:60000/task/${taskId}`)
+          const response = await fetch(`${domain}:60000/task/${taskId}`)
           const data = await response.json()
 
           if (data.status === 'completed') {
