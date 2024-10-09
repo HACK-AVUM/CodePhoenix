@@ -1,6 +1,8 @@
 # CodePhoenix
 <p align="center">
-  <img width="150" src="./docs/logo.png" style="border-radius: 10px;">
+  <img width="150" src="./docs/Logo-Havum.svg" style="border-radius: 10px;">
+  <br>
+  <i>Logo Code Phoenix per l'Hackaton Code Rebirth 2024</i>
 </p>
 
 
@@ -137,5 +139,3 @@ Per ulteriori dettagli sui vari microservizi del progetto, consulta i seguenti d
 - Per arrestare l'applicazione, premi `Ctrl+C` nel terminale dove hai eseguito `docker compose up`.
 - Per eseguire l'applicazione in background, usa il comando `docker compose up -d`.
 - Per visualizzare i log dell'applicazione in esecuzione in background, usa `docker compose logs -f`.
-
-
