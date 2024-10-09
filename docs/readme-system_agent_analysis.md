@@ -70,3 +70,68 @@ Questo agente valuta la complessità del codice, fornendo metriche dettagliate c
 - **backstory** : Riguarda l'aspetto del **prompt engineering** utilizzato per poter dare attributi in più agli agenti
 - **allow_delegation** : permette agli altri agenti che fanno parte di una **Crew** di poter scambiare gli output tra di loro.
 - **LLM**: rappresenta il core del tipo di Large Language Model che abbiamo utilizzato 
+
+### Task - Code Analyzer 
+
+```python
+task1 = Task(
+    description=f"""Analyze the structure and functionality of the legacy code.
+    Identify key modules, data structures, and business logic implementations.
+    Code: {code}""",
+    expected_output="Detailed report on code structure and functionality",
+    agent=code_analyst,
+)
+```
+
+#### Parametri - Task 
+
+- **description**: Descrive il compito che deve essere eseguito.
+  - Esempio: "Analyze the structure and functionality of the legacy code. Identify key modules, data structures, and business logic implementations. Code: {code}"
+- **expected_output**: Descrive l'output atteso dopo l'esecuzione del task.
+  - Esempio: "Detailed report on code structure and functionality"
+- **agent**: L'agente responsabile dell'esecuzione del task.
+  - Esempio: `code_analyst`
+
+### Task - Evaluation Analyzer 
+
+```python
+task2 = Task(
+    description=f"""Using the insights from the code analysis, assess the overall complexity of the legacy codebase.
+    Provide metrics and recommendations for refactoring priorities.
+    Code: {code}""",
+    expected_output="Comprehensive complexity assessment report with refactoring suggestions" if not number_response else "A single digit number, from 0 to 9 inclusive, indicating the complexity of the code.",
+    agent=complexity_assessor
+)
+```
+
+#### Parametri - Task
+
+- **description**: Descrive il compito che deve essere eseguito.
+  - Esempio: "Using the insights from the code analysis, assess the overall complexity of the legacy codebase. Provide metrics and recommendations for refactoring priorities. Code: {code}"
+- **expected_output**: Descrive l'output atteso dopo l'esecuzione del task.
+  - Esempio: "Comprehensive complexity assessment report with refactoring suggestions" if not number_response else "A single digit number, from 0 to 9 inclusive, indicating the complexity of the code."
+- **agent**: L'agente responsabile dell'esecuzione del task.
+  - Esempio: `complexity_assessor`
+
+#### Crew - System Agent Analysis 
+
+La **crew** risulta essere l'insieme degli agenti che vengono creati e a cui vengono assegnati i task : 
+
+
+```python
+    # Instantiate the crew for legacy code analysis
+    analysis_crew = Crew(
+        agents=[code_analyst, complexity_assessor],
+        tasks=[task1, task2],
+        verbose=True,
+        process=Process.sequential
+    )
+
+    # Execute the analysis
+    analysis_result = analysis_crew.kickoff()
+```
+#### Parametri - Crew
+
+- **agents**: L'insieme di agenti che vengono creati per eseguire il compito 
+- **tasks**: L'insieme dei vari task che sono stati assegnati ai vari agenti.
+- **process**: Indica se il tipo di processo può essere sequenziale oppure no
