@@ -1,4 +1,5 @@
 import os
+import threading
 
 os.environ["OTEL_SDK_DISABLED"] = "true"
 
@@ -123,110 +124,116 @@ async def get_task_status(task_id: str):
     return task_results[task_id]
 
 
+code_folder_lock = threading.Lock()
+
+
 def process_zip_file(zip_contents: bytes, task_id: str):
     # Create a local directory to extract the zip contents
-    code_dir = "./code"
-    os.makedirs(code_dir, exist_ok=True)
 
+    with code_folder_lock:  # Acquire the lock
 
-    try:
-        # Create a ZipFile object from the in-memory file and extract its contents
-        with zipfile.ZipFile(io.BytesIO(zip_contents)) as zip_ref:
-            zip_ref.extractall(code_dir)
+        code_dir = "./code"
+        os.makedirs(code_dir, exist_ok=True)
 
-        if 'SONARQUBE_TOKEN' in os.environ and os.environ['SONARQUBE_TOKEN']:
-            # Run SonarQube scan
-            sonar_scanner_cmd = [
-                "sonar-scanner",
-                f"-Dsonar.projectKey=project",
-                f"-Dsonar.sources={code_dir}",
-                "-Dsonar.host.url=http://sonarqube:9000",
-                f"-Dsonar.token={os.environ['SONARQUBE_TOKEN']}"
-            ]
-
-            try:
-                process = subprocess.run(
-                    sonar_scanner_cmd,
-                    capture_output=True,
-                    text=True,
-                    check=True
-                )
-                scan_result = process.stdout
-            except subprocess.CalledProcessError as e:
-                scan_result = f"Error SonarQube scan: {e.stderr}"
-            except Exception as e:
-                scan_result = f"Error running SonarQube scan: {str(e)}"
-
-            sleep(2)
-
-        # Process the code as before
-        all_code = ""
-        for root, _, files in os.walk(code_dir):
-            for file_name in files:
-                file_path = os.path.join(root, file_name)
-                try:
-                    with open(file_path, 'r', encoding='utf-8') as file:
-                        code_content = file.read()
-                        all_code += f"\n\n# File: {os.path.relpath(file_path, code_dir)}\n\n{code_content}"
-                except UnicodeDecodeError:
-                    continue
-
-        if 'SONARQUBE_TOKEN' in os.environ and os.environ['SONARQUBE_TOKEN']:
-            if "Error" not in scan_result:
-                sonarqube_api_url = f"http://sonarqube:9000/api/issues/search?componentKeys=project"
-
-                print(sonarqube_api_url)
-
-                try:
-                    headers = {
-                        "Authorization": f"Bearer {os.environ['SONARQUBE_TOKEN']}"
-                    }
-                    response = requests.get(sonarqube_api_url, headers=headers)
-                    if response.status_code == 200:
-                        sonarqube_results = response.json()
-                        all_code += f"\n\n# SonarQube Analysis Results\n\n{sonarqube_results}"
-                    else:
-                        print(f"Failed to fetch SonarQube results: HTTP {response.status_code}")
-                except Exception as e:
-                    print(f"Error fetching SonarQube results: {str(e)}")
-
-
-        result = {}
-
-        difficulty_rating = analyze_code(all_code, number_response=True)
-
-
-        result["LLM used"] = "Llama 3.1 7B Instruct"
 
         try:
-            difficulty = int(difficulty_rating)
-            if difficulty > 7:
-                print(f"Code difficulty: {difficulty}")
-                os.environ["LLM"] = "together_ai/meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo"
-                result["LLM used"] = "Llama 3.1 70B Instruct"
-        except ValueError:
-            print("Invalid difficulty rating")
+            # Create a ZipFile object from the in-memory file and extract its contents
+            with zipfile.ZipFile(io.BytesIO(zip_contents)) as zip_ref:
+                zip_ref.extractall(code_dir)
+
+            if 'SONARQUBE_TOKEN' in os.environ and os.environ['SONARQUBE_TOKEN']:
+                # Run SonarQube scan
+                sonar_scanner_cmd = [
+                    "sonar-scanner",
+                    f"-Dsonar.projectKey=project",
+                    f"-Dsonar.sources={code_dir}",
+                    "-Dsonar.host.url=http://sonarqube:9000",
+                    f"-Dsonar.token={os.environ['SONARQUBE_TOKEN']}"
+                ]
+
+                try:
+                    process = subprocess.run(
+                        sonar_scanner_cmd,
+                        capture_output=True,
+                        text=True,
+                        check=True
+                    )
+                    scan_result = process.stdout
+                except subprocess.CalledProcessError as e:
+                    scan_result = f"Error SonarQube scan: {e.stderr}"
+                except Exception as e:
+                    scan_result = f"Error running SonarQube scan: {str(e)}"
+
+                sleep(2)
+
+            # Process the code as before
+            all_code = ""
+            for root, _, files in os.walk(code_dir):
+                for file_name in files:
+                    file_path = os.path.join(root, file_name)
+                    try:
+                        with open(file_path, 'r', encoding='utf-8') as file:
+                            code_content = file.read()
+                            all_code += f"\n\n# File: {os.path.relpath(file_path, code_dir)}\n\n{code_content}"
+                    except UnicodeDecodeError:
+                        continue
+
+            if 'SONARQUBE_TOKEN' in os.environ and os.environ['SONARQUBE_TOKEN']:
+                if "Error" not in scan_result:
+                    sonarqube_api_url = f"http://sonarqube:9000/api/issues/search?componentKeys=project"
+
+                    print(sonarqube_api_url)
+
+                    try:
+                        headers = {
+                            "Authorization": f"Bearer {os.environ['SONARQUBE_TOKEN']}"
+                        }
+                        response = requests.get(sonarqube_api_url, headers=headers)
+                        if response.status_code == 200:
+                            sonarqube_results = response.json()
+                            all_code += f"\n\n# SonarQube Analysis Results\n\n{sonarqube_results}"
+                        else:
+                            print(f"Failed to fetch SonarQube results: HTTP {response.status_code}")
+                    except Exception as e:
+                        print(f"Error fetching SonarQube results: {str(e)}")
+        finally:
+            # Clean up: delete the local directory after analysis
+            import shutil
+            shutil.rmtree(code_dir, ignore_errors=True)
 
 
+    result = {}
+
+    difficulty_rating = analyze_code(all_code, number_response=True)
+
+
+    result["LLM used"] = "Llama 3.1 7B Instruct"
+
+    try:
+        difficulty = int(difficulty_rating)
+        if difficulty > 7:
+            print(f"Code difficulty: {difficulty}")
+            os.environ["LLM"] = "together_ai/meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo"
+            result["LLM used"] = "Llama 3.1 70B Instruct"
+    except ValueError:
+        print("Invalid difficulty rating")
+
+
+    result.update(process_code_string(all_code))
+
+    to_repeat = perform_test(all_code, result["analysis_result"], result["refactoring_result"], binary_response=True)
+    if to_repeat == "1":
+        print("Repeating the task")
         result.update(process_code_string(all_code))
 
-        to_repeat = perform_test(all_code, result["analysis_result"], result["refactoring_result"], binary_response=True)
-        if to_repeat == "1":
-            print("Repeating the task")
-            result.update(process_code_string(all_code))
 
+    print(f"##########Analysis Result##########\n{result['analysis_result']}\n\n\n\n"
+            f"##########Refactoring Result##########\n{result['refactoring_result']}\n\n\n\n"
+            f"##########Test Result##########\n{result['test_result']}\n\n\n\n"
+            f"##########Scan Result##########\n{result['scan_result']}")
 
-        print(f"##########Analysis Result##########\n{result['analysis_result']}\n\n\n\n"
-              f"##########Refactoring Result##########\n{result['refactoring_result']}\n\n\n\n"
-              f"##########Test Result##########\n{result['test_result']}\n\n\n\n"
-              f"##########Scan Result##########\n{result['scan_result']}")
+    task_results[task_id] = {"status": "completed", "result": result}
 
-        task_results[task_id] = {"status": "completed", "result": result}
-
-    finally:
-        # Clean up: delete the local directory after analysis
-        import shutil
-        shutil.rmtree(code_dir, ignore_errors=True)
 
 
 if __name__ == "__main__":

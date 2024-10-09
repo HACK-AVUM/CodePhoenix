@@ -23,6 +23,9 @@ Se non hai già Docker installato sul tuo sistema, segui questi passaggi:
 3. Cerca l'opzione per generare una nuova chiave API
 4. Copia la chiave API generata
 
+
+Questo verrà usato per fare inferenza con modelli open source, alternativamente usabili anche in locale. 
+
 ### 3. Configurare il File .env
 
 1. Nella directory principale del progetto, crea un file chiamato `.env` se non esiste già

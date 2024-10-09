@@ -49,6 +49,9 @@ function App() {
             setResult(JSON.stringify(data.result, null, 2))
           } else if (data.status === 'processing') {
             setTimeout(pollTaskStatus, 2000) // Poll every 2 seconds
+          } else if (data.status === 'error') {
+            setStatus('error')
+            setResult(JSON.stringify(data.result, null, 2))
           }
         } catch (error) {
           console.error('Error polling task status:', error)
