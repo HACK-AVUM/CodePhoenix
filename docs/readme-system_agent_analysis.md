@@ -9,7 +9,7 @@ Il microservizio di Analisi utilizza un sistema multi-agente per analizzare il c
 Il microservizio è progettato per eseguire i task in maniera sequenziale. I task sono assegnati rispettivamente a Code Analyzer e Complex Analyzer, garantendo che l'analisi del codice venga effettuata in due fasi distinte ma complementari.
 
 
-![Analysis Microservice](../system_agent_analysis/images/micro-analysis.png)
+![Analysis Microservice](./doc-images-analysis//micro-analysis.png)
 
 ### Code Analyzer
 
@@ -33,7 +33,7 @@ code_analyst = Agent(
 
 #### WorkFlow - Code Analyzer
 
-![Analysis Microservice](../system_agent_analysis/images/evaluation-workflow.png)
+![WorkFlow - Code Analyzer](./doc-images-analysis/analyzer-workflow.png)
 
 
 ### Complex Analyzer
@@ -55,6 +55,13 @@ Questo agente valuta la complessità del codice, fornendo metriche dettagliate c
         llm=os.environ["LLM"],
     )
 ```
+
+
+
+#### WorkFlow - Code Analyzer
+
+![WorkFlow - Evaluation Analyzer](./doc-images-analysis/evaluation-workflow.png)
+
 
 ### Parametri - Code Analyzer & Complex Analyzer
 
