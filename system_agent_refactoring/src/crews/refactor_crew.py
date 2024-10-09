@@ -58,16 +58,3 @@ def refactoring_code(code, analysis_result):
 
     return str(refactoring_result.raw)
 
-if __name__ == "__main__":
-    load_dotenv()
-    sample_code = """
-def calculate_sum(numbers):
-    sum = 0
-    for i in range(len(numbers)):
-        sum = sum + numbers[i]
-    return sum
-    """
-
-    analysis_result = "The code is well-structured and follows best practices for readability and maintainability."
-    refactoring_result = refactoring_code(sample_code, analysis_result)
-    print(refactoring_result)

@@ -1,7 +1,6 @@
 import os
-
 from crewai import Agent, Task, Crew, Process
-from dotenv import load_dotenv
+
 
 def analyze_code(code, number_response=False):
     code_analyst = Agent(
@@ -54,8 +53,3 @@ def analyze_code(code, number_response=False):
 
     return str(analysis_result.raw)
 
-
-if __name__ == "__main__":
-    load_dotenv()
-    analysis_result = analyze_code("print('Hello world')")
-    print(analysis_result)

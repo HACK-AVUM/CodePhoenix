@@ -1,4 +1,26 @@
+# CodePhoenix
+<p align="center">
+  <img width="150" src="./docs/logo.png" style="border-radius: 10px;">
+</p>
+
+
+
 # Guida all'Installazione e Avvio dell'Applicazione
+
+## Sommario
+
+- [Prerequisiti](#prerequisiti)
+- [Passi per l'Installazione](#passi-per-linstallazione)
+  - [1. Installare Docker](#1-installare-docker)
+  - [2. Generare la Chiave API di Together AI](#2-generare-la-chiave-api-di-together-ai)
+  - [3. Configurare il File .env](#3-configurare-il-file-env)
+  - [4. Costruire l'Immagine Docker](#4-costruire-limmagine-docker)
+  - [5. Avviare l'Applicazione](#5-avviare-lapplicazione)
+- [Configurazione di SonarQube](#configurazione-di-sonarqube)
+- [Riavvio dell'Applicazione](#riavvio-dellapplicazione)
+- [Accesso all'Applicazione](#accesso-allapplicazione)
+- [Note Aggiuntive](#note-aggiuntive)
+- [Documentazione Aggiuntiva](#documentazione-aggiuntiva)
 
 ## Prerequisiti
 
@@ -23,8 +45,7 @@ Se non hai già Docker installato sul tuo sistema, segui questi passaggi:
 3. Cerca l'opzione per generare una nuova chiave API
 4. Copia la chiave API generata
 
-
-Questo verrà usato per fare inferenza con modelli open source, alternativamente usabili anche in locale. 
+Questo verrà usato per fare inferenza con modelli open source, alternativamente usabili anche in locale.
 
 ### 3. Configurare il File .env
 
@@ -91,12 +112,30 @@ docker-compose build && docker-compose up
 
 Dopo aver configurato SonarQube e riavviato l'applicazione, puoi accedere al frontend dell'applicazione navigando nel tuo browser web a:
 
-```
+```bash
 http://localhost:3000
 ```
+
+
+
+
+## Documentazione Aggiuntiva
+
+Per ulteriori dettagli sui vari microservizi del progetto, consulta i seguenti documenti:
+
+| Microservizio                      | Descrizione                                     | Link alla Documentazione                          |
+|------------------------------------|-------------------------------------------------|--------------------------------------------------|
+| Sistema di Analisi                 | Analisi del codice                              | [Documentazione Analisi](docs/readme-system_agent_analysis.md) |
+| Sistema di Test                    | Test automatici e integrazione continua         | [Documentazione Test](docs/readme-system_agent_test.md)       |
+| Sistema di Scansione               | Scansione di sicurezza e vulnerabilità          | [Documentazione Scansione](docs/readme-system_agent_scan.md)    |
+| Sistema di Refactoring             | Refactoring e miglioramento del codice          | [Documentazione Refactoring](docs/readme-system_agent_refactoring.md) |
+
+
 
 ### Note Aggiuntive
 
 - Per arrestare l'applicazione, premi `Ctrl+C` nel terminale dove hai eseguito `docker compose up`.
 - Per eseguire l'applicazione in background, usa il comando `docker compose up -d`.
 - Per visualizzare i log dell'applicazione in esecuzione in background, usa `docker compose logs -f`.
+
+
