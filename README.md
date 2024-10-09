@@ -1,6 +1,6 @@
 # CodePhoenix
 <p align="center">
-  <img width="150" src="./docs/Logo-Havum.svg" style="border-radius: 10px;">
+  <img width="300" height="300" src="./docs/Logo-Havum.svg" style="border-radius: 10px;">
   <br>
   <i>Logo Code Phoenix per l'Hackaton Code Rebirth 2024</i>
 </p>
@@ -127,10 +127,10 @@ Per ulteriori dettagli sui vari microservizi del progetto, consulta i seguenti d
 
 | Microservizio                      | Descrizione                                     | Link alla Documentazione                          |
 |------------------------------------|-------------------------------------------------|--------------------------------------------------|
-| Sistema di Analisi                 | Analisi del codice                              | [Documentazione Analisi](docs/readme-system_agent_analysis.md) |
-| Sistema di Test                    | Test automatici e integrazione continua         | [Documentazione Test](docs/readme-system_agent_test.md)       |
-| Sistema di Scansione               | Scansione di sicurezza e vulnerabilità          | [Documentazione Scansione](docs/readme-system_agent_scan.md)    |
-| Sistema di Refactoring             | Refactoring e miglioramento del codice          | [Documentazione Refactoring](docs/readme-system_agent_refactoring.md) |
+| Sistema di Analisi   🔍  | Analisi del codice                              | [Documentazione Analisi](docs/readme-system_agent_analysis.md) |
+| Sistema di Test     💻            | Test automatici e integrazione continua         | [Documentazione Test](docs/readme-system_agent_test.md)       |
+| Sistema di Scansione      🔎       | Scansione di sicurezza e vulnerabilità          | [Documentazione Scansione](docs/readme-system_agent_scan.md)    |
+| Sistema di Refactoring ⚙️          | Refactoring e miglioramento del codice          | [Documentazione Refactoring](docs/readme-system_agent_refactoring.md) |
 
 
 
