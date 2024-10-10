@@ -1,7 +1,7 @@
 import os
 import threading
 
-from system_agent_doc.app.services.docs_service import generate_html_documentation, generate_pdf_documentation,generate_markdown_documentation
+# from system_agent_doc.app.services.docs_service import generate_html_documentation, generate_pdf_documentation,generate_markdown_documentation
 
 os.environ["OTEL_SDK_DISABLED"] = "true"
 
@@ -94,20 +94,20 @@ def process_code_string(code: str, doc_format: str = None, directory_path: str =
     test_result = perform_test(code, analysis_result, refactoring_result)
 
     # Generazione della documentazione se doc_format è specificato
-    documentation_result = None
+    # documentation_result = None
 
     #TODO : Al posto dei directory path vuoti, inserisci quale sorta di path vuoi per poter generare il PDF, HTML, MARKDOWN ( Effettua questa modifica da Front-End , facendo selezionare all'utente il percorso dove generare la documentazione)
     #TODO : Esegui anche altre modifiche se necessarie
 
-    if doc_format:
-        if doc_format.lower() == 'markdown':
-            documentation_result = generate_markdown_documentation(code_refactoring_result=refactoring_result,directory_path=directory_path)
-        elif doc_format.lower() == 'pdf':
-            documentation_result = generate_pdf_documentation(code_refactoring_result=refactoring_result, directory_path=directory_path)
-        elif doc_format.lower() == 'html':
-            documentation_result = generate_html_documentation(code_refactoring_result=refactoring_result,directory_path=directory_path)
-        else:
-            documentation_result = "Formato di documentazione non supportato"
+    # if doc_format:
+    #     if doc_format.lower() == 'markdown':
+    #         documentation_result = generate_markdown_documentation(code_refactoring_result=refactoring_result,directory_path=directory_path)
+    #     elif doc_format.lower() == 'pdf':
+    #         documentation_result = generate_pdf_documentation(code_refactoring_result=refactoring_result, directory_path=directory_path)
+    #     elif doc_format.lower() == 'html':
+    #         documentation_result = generate_html_documentation(code_refactoring_result=refactoring_result,directory_path=directory_path)
+    #     else:
+    #         documentation_result = "Formato di documentazione non supportato"
 
     # Restituzione dei risultati
     return {
@@ -115,7 +115,7 @@ def process_code_string(code: str, doc_format: str = None, directory_path: str =
         "scan_result": scan_result,
         "refactoring_result": refactoring_result,
         "test_result": test_result,
-        "documentation_result": documentation_result,
+        # "documentation_result": documentation_result,
     }
 
 task_results = {}
