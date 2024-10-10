@@ -113,7 +113,7 @@ def process_code_string(code: str, doc_format: str = None, directory_path: str =
         "scan_result": scan_result,
         "refactoring_result": refactoring_result,
         "test_result": test_result,
-        "documentation_result": documentation_result,
+        # "documentation_result": documentation_result,
     }
 
 task_results = {}
