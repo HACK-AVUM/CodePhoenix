@@ -8,7 +8,7 @@ Il microservizio di scansione delle vulnerabilità analizza il codice sorgente p
 
 Il microservizio è progettato per eseguire la scansione delle vulnerabilità in modo sequenziale. Gli agenti principali sono responsabili della scansione del codice e dell'integrazione dei risultati con SonarQube.
 
-![Vulnerability Scanning Microservice](./doc-images-vulnerability/micro-vulnerability.png)
+![Vulnerability Scanning Microservice](./doc-images-scanning/micro-scanning.png)
 
 ### Vulnerability Scanner
 
@@ -29,10 +29,6 @@ vulnerability_scanner = Agent(
     llm=os.environ["LLM"],
 )
 ```
-
-#### WorkFlow - Vulnerability Scanner
-
-![WorkFlow - Vulnerability Scanner](./doc-images-vulnerability/scanner-workflow.png)
 
 ### Parametri - Vulnerability Scanner
 
@@ -65,10 +61,6 @@ sonarqube_integrator = Agent(
 )
 ```
 
-#### WorkFlow - SonarQube Integrator
-
-![WorkFlow - SonarQube Integrator](./doc-images-vulnerability/integrator-workflow.png)
-
 ### Parametri - SonarQube Integrator
 
 - **role**: Descrive il ruolo che l'agente deve avere all'interno del microservizio.
@@ -83,6 +75,11 @@ sonarqube_integrator = Agent(
   - Esempio: `False`
 - **llm**: Rappresenta il core del tipo di Large Language Model utilizzato.
   - Esempio: `os.environ["LLM"]`
+
+### Workflow 
+
+![Vulnerability Scanning Microservice](./doc-images-scanning/workflow-scanning.png)
+
 
 ### Task - Vulnerability Scanner
 
