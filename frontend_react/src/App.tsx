@@ -9,8 +9,7 @@ function App() {
   const [status, setStatus] = useState<string | null>(null)
   const [docFormat, setDocFormat] = useState<string>('pdf')
 
-  let domain = window.location.origin;
-  domain = domain.split(':')[0];
+  let domain = window.location.origin.split(':').slice(0, -1).join(':');
 
   const handleFileUpload = async (file: File) => {
     setTaskId(null)

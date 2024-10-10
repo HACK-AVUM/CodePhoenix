@@ -7,3 +7,5 @@ Flask
 Flask-Cors
 requests
 python-multipart
+reportlab
+markdown2
