@@ -96,8 +96,6 @@ def process_code_string(code: str, doc_format: str = None, directory_path: str =
     # Generazione della documentazione se doc_format è specificato
     # documentation_result = None
 
-    #TODO : Al posto dei directory path vuoti, inserisci quale sorta di path vuoi per poter generare il PDF, HTML, MARKDOWN ( Effettua questa modifica da Front-End , facendo selezionare all'utente il percorso dove generare la documentazione)
-    #TODO : Esegui anche altre modifiche se necessarie
 
     # if doc_format:
     #     if doc_format.lower() == 'markdown':
