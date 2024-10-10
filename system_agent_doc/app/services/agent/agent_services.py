@@ -40,8 +40,6 @@ def create_code_analyzer_agent():
 
     llm = os.environ["LLM"]
 
-    # TODO : Modifica questi parametri e inserisci all'interno del goal il fatto di analizzare il codice di refactoring 
-
 
     return Agent(
         role = role_agent,
