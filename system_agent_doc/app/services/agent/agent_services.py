@@ -34,9 +34,9 @@ create_code_analyzer_agent() - create an agent for code analysis
 def create_code_analyzer_agent():
 
     role_agent = "Senior Code Analyzer"
-    goal_agent='Analyze and understand code structure and functionality',
+    goal_agent='Analyze and understand code structure and functionality'
     backstory="""You are an experienced developer with decades of experience in analyzing and refactoring systems.
-    Your expertise lies in dissecting complex programs and understanding their core logic.""",
+    Your expertise lies in dissecting complex programs and understanding their core logic."""
 
     llm = os.environ["LLM"]
 
