@@ -80,25 +80,25 @@ async def scan_vulnerabilities_endpoint(code_input: CodeInput):
 #     return ServiceResponse(status="success", result=response.json())
 
 
-def process_code_string(code: str, doc_format: str = None, directory_path: str = None) -> Dict[str, Any]:
+def process_code_string(code: str, doc_format: str = None, directory_path: str = "./output") -> Dict[str, Any]:
     # Analisi del codice
     analysis_result = analyze_code(code)
-    
+
     # Scansione delle vulnerabilità
     scan_result = perform_scan_vulnerability(code)
-    
+
     # Rifattorizzazione del codice
     refactoring_result = refactoring_code(code, analysis_result)
-    
+
     # Testing del codice rifattorizzato
     test_result = perform_test(code, analysis_result, refactoring_result)
-    
+
     # Generazione della documentazione se doc_format è specificato
     documentation_result = None
 
     #TODO : Al posto dei directory path vuoti, inserisci quale sorta di path vuoi per poter generare il PDF, HTML, MARKDOWN ( Effettua questa modifica da Front-End , facendo selezionare all'utente il percorso dove generare la documentazione)
-    #TODO : Esegui anche altre modifiche se necessarie 
-    
+    #TODO : Esegui anche altre modifiche se necessarie
+
     if doc_format:
         if doc_format.lower() == 'markdown':
             documentation_result = generate_markdown_documentation(code_refactoring_result=refactoring_result,directory_path=directory_path)
@@ -107,7 +107,7 @@ def process_code_string(code: str, doc_format: str = None, directory_path: str =
         elif doc_format.lower() == 'html':
             documentation_result = generate_html_documentation(code_refactoring_result=refactoring_result,directory_path=directory_path)
         else:
-            raise ValueError(f"Formato di documentazione non supportato: {doc_format}")
+            documentation_result = "Formato di documentazione non supportato"
 
     # Restituzione dei risultati
     return {
