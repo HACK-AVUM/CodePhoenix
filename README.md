@@ -216,10 +216,10 @@ Ecco la tabella aggiornata con il microservizio di documentazione:
 
 ### Video Presentazione 
 
-Link : https://youtu.be/OZQRhPPUV34
+[Link](https://youtu.be/OZQRhPPUV34)
 
-Link Google Drive : https://drive.google.com/file/d/1bU4CbVPdhbZO6aMgEHKC8T1_lOg5YRbs/view
+[Link Google Drive](https://drive.google.com/file/d/1bU4CbVPdhbZO6aMgEHKC8T1_lOg5YRbs/view)
 
 ### Web Demo 
 
-Link : https://codephoenix.italynorth.cloudapp.azure.com/
+[Live Demo](https://codephoenix.italynorth.cloudapp.azure.com/)
