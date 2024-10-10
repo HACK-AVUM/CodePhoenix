@@ -1,5 +1,8 @@
 import os
 from crewai import Agent, Task, Crew, Process
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def perform_test(old_code, old_code_analysis_result, new_code_to_test, binary_response=False):

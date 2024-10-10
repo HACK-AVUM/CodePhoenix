@@ -1,5 +1,10 @@
 import os
 from crewai import Agent, Task, Crew, Process
+from dotenv import load_dotenv
+
+
+
+load_dotenv()
 
 
 def analyze_code(code, number_response=False):
