@@ -32,7 +32,7 @@ code_analyzer = Agent(
 
 #### WorkFlow - Code Analyzer
 
-![WorkFlow - Code Analyzer](./doc-images-refactoring/analyzer-workflow.png)
+![WorkFlow - Code Analyzer](./doc-images-refactoring/analyzer-ref-workflow.png)
 
 ### Refactoring Expert
 
@@ -61,17 +61,11 @@ refactoring_expert = Agent(
 ### Parametri - Code Analyzer & Refactoring Expert
 
 - **role**: Descrive il ruolo che l'agente deve avere all'interno.
-  - Esempio: 'Code Analyzer'
 - **goal**: Descrive l'obiettivo che l'agente deve raggiungere all'interno del microservizio.
-  - Esempio: 'Analyze and understand code structure and functionality'
 - **backstory**: Riguarda l'aspetto del **prompt engineering** utilizzato per poter dare attributi in più agli agenti.
-  - Esempio: "You are an experienced developer with decades of experience in analyzing and refactoring systems. Your expertise lies in dissecting complex programs and understanding their core logic."
 - **verbose**: Indica se l'agente deve fornire output dettagliati durante la sua esecuzione.
-  - Esempio: `True`
 - **allow_delegation**: Permette agli altri agenti che fanno parte di una **Crew** di poter scambiare gli output tra di loro.
-  - Esempio: `False`
 - **llm**: Rappresenta il core del tipo di Large Language Model che abbiamo utilizzato.
-  - Esempio: `os.environ["LLM"]`
 
 ### Task - Code Analyzer
 

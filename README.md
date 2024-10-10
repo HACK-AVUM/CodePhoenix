@@ -25,7 +25,6 @@
 - [Sequence Diagram](#sequence-diagram)
 - [Documentazione Aggiuntiva](#documentazione-aggiuntiva)
 
-
 ## Prerequisiti
 
 1. Docker
@@ -124,13 +123,9 @@ http://localhost:3000
 
 ![Microservice Architecture](./docs/Architecture.png)
 
-
-## Sequence Diagram 
-
-
+## Sequence Diagram
 
 ![Sequence Diagram](./docs/Sequence-Diagram.svg)
-
 
 ## Documentazione Aggiuntiva
 

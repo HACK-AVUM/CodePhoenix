@@ -8,7 +8,6 @@ Il microservizio di Analisi utilizza un sistema multi-agente per analizzare il c
 
 Il microservizio è progettato per eseguire i task in maniera sequenziale. I task sono assegnati rispettivamente a Code Analyzer e Complex Analyzer, garantendo che l'analisi del codice venga effettuata in due fasi distinte ma complementari.
 
-
 ![Analysis Microservice](./doc-images-analysis//micro-analysis.png)
 
 ### Code Analyzer
@@ -35,7 +34,6 @@ code_analyst = Agent(
 
 ![WorkFlow - Code Analyzer](./doc-images-analysis/analyzer-workflow.png)
 
-
 ### Complex Analyzer
 
 Questo agente valuta la complessità del codice, fornendo metriche dettagliate che aiutano a comprendere meglio le aree più critiche e complesse del progetto.
@@ -56,12 +54,9 @@ Questo agente valuta la complessità del codice, fornendo metriche dettagliate c
     )
 ```
 
-
-
 #### WorkFlow - Code Analyzer
 
 ![WorkFlow - Evaluation Analyzer](./doc-images-analysis/evaluation-workflow.png)
-
 
 ### Parametri - Code Analyzer & Complex Analyzer
 
@@ -69,9 +64,9 @@ Questo agente valuta la complessità del codice, fornendo metriche dettagliate c
 - **goal** : Descrive l'obiettivo che l'agente deve raggiungere all'interno del microservizio
 - **backstory** : Riguarda l'aspetto del **prompt engineering** utilizzato per poter dare attributi in più agli agenti
 - **allow_delegation** : permette agli altri agenti che fanno parte di una **Crew** di poter scambiare gli output tra di loro.
-- **LLM**: rappresenta il core del tipo di Large Language Model che abbiamo utilizzato 
+- **LLM**: rappresenta il core del tipo di Large Language Model che abbiamo utilizzato
 
-### Task - Code Analyzer 
+### Task - Code Analyzer
 
 ```python
 task1 = Task(
@@ -83,7 +78,7 @@ task1 = Task(
 )
 ```
 
-#### Parametri - Task 
+#### Parametri - Task
 
 - **description**: Descrive il compito che deve essere eseguito.
   - Esempio: "Analyze the structure and functionality of the legacy code. Identify key modules, data structures, and business logic implementations. Code: {code}"
@@ -92,7 +87,7 @@ task1 = Task(
 - **agent**: L'agente responsabile dell'esecuzione del task.
   - Esempio: `code_analyst`
 
-### Task - Evaluation Analyzer 
+### Task - Evaluation Analyzer
 
 ```python
 task2 = Task(
@@ -113,10 +108,9 @@ task2 = Task(
 - **agent**: L'agente responsabile dell'esecuzione del task.
   - Esempio: `complexity_assessor`
 
-#### Crew - System Agent Analysis 
+#### Crew - System Agent Analysis
 
-La **crew** risulta essere l'insieme degli agenti che vengono creati e a cui vengono assegnati i task : 
-
+La **crew** risulta essere l'insieme degli agenti che vengono creati e a cui vengono assegnati i task :
 
 ```python
     # Instantiate the crew for legacy code analysis
@@ -130,8 +124,9 @@ La **crew** risulta essere l'insieme degli agenti che vengono creati e a cui ven
     # Execute the analysis
     analysis_result = analysis_crew.kickoff()
 ```
+
 #### Parametri - Crew
 
-- **agents**: L'insieme di agenti che vengono creati per eseguire il compito 
+- **agents**: L'insieme di agenti che vengono creati per eseguire il compito
 - **tasks**: L'insieme dei vari task che sono stati assegnati ai vari agenti.
 - **process**: Indica se il tipo di processo può essere sequenziale oppure no
