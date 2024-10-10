@@ -1,6 +1,5 @@
 import os
 from crewai import Agent, Task, Crew, Process
-from dotenv import load_dotenv
 
 
 def perform_test(old_code, old_code_analysis_result, new_code_to_test, binary_response=False):
@@ -39,20 +38,3 @@ def perform_test(old_code, old_code_analysis_result, new_code_to_test, binary_re
     test_result = testing_crew.kickoff()
 
     return str(test_result.raw)
-
-#if __name__ == "__main__":
-    #load_dotenv()
-    #old_code = """
-#def calculate_sum(numbers):
-    #sum = 0
-    #for i in range(len(numbers)):
-     #   sum = sum + numbers[i]
-    #return sum
-    #"""
-    #new_code = """
-#def calculate_sum(numbers):
-    #return sum(numbers)
-    #"""
-    #old_code_analysis_result = "The code is well-structured and follows best practices for readability and maintainability."
-    #test_result = perform_test(old_code, old_code_analysis_result, new_code)
-    #print(test_result)
