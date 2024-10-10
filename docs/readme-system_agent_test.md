@@ -1,4 +1,4 @@
-# Testing Code Microservice
+# Testing Code Microservice 💻
 
 ## Descrizione
 
@@ -8,7 +8,7 @@ Il microservizio di Testing confronta la funzionalità del codice originale con 
 
 Il microservizio è progettato per eseguire i task di testing in maniera sequenziale. Un agente principale, Code Tester, esegue il compito di confrontare la funzionalità del codice originale con quella del codice rifattorizzato.
 
-![Testing Microservice](./doc-images-testing/micro-testing.png)
+![Testing Microservice](./doc-images-testing/micro-tester.png)
 
 ### Code Tester
 
@@ -37,17 +37,11 @@ code_tester = Agent(
 ### Parametri - Code Tester
 
 - **role**: Descrive il ruolo che l'agente deve avere all'interno del microservizio.
-  - Esempio: 'Code Tester'
 - **goal**: Descrive l'obiettivo che l'agente deve raggiungere all'interno del microservizio.
-  - Esempio: 'Test and compare the functionality of old and new code'
 - **backstory**: Riguarda l'aspetto del **prompt engineering** utilizzato per poter dare attributi in più agli agenti.
-  - Esempio: "You are an experienced QA engineer with expertise in testing complex systems. Your role is to ensure that refactored code maintains the same functionality as the original."
 - **verbose**: Indica se l'agente deve fornire output dettagliati durante la sua esecuzione.
-  - Esempio: `True`
 - **allow_delegation**: Permette agli altri agenti che fanno parte di una **Crew** di poter scambiare gli output tra di loro.
-  - Esempio: `False`
 - **llm**: Rappresenta il core del tipo di Large Language Model che abbiamo utilizzato.
-  - Esempio: `os.environ["LLM"]`
 
 ### Task - Code Tester
 

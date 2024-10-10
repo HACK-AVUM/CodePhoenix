@@ -1,4 +1,4 @@
-# Vulnerability Scanning Microservice 🔎
+# Vulnerability Scanning Microservice ⚡
 
 ## Descrizione
 
