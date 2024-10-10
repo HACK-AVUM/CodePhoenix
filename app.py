@@ -1,8 +1,7 @@
 import os
 import threading
 
-from system_agent_doc.app.services.docs_service import generate_html_documentation, generate_markdown_documentation, generate_pdf_documentation
-
+# from system_agent_doc.app.services.docs_service import generate_html_documentation, generate_pdf_documentation,generate_markdown_documentation
 
 os.environ["OTEL_SDK_DISABLED"] = "true"
 
@@ -95,18 +94,18 @@ def process_code_string(code: str, doc_format: str = None, directory_path: str =
     test_result = perform_test(code, analysis_result, refactoring_result)
 
     # Generazione della documentazione se doc_format è specificato
-    documentation_result = None
+    # documentation_result = None
 
 
-    if doc_format:
-        if doc_format.lower() == 'markdown':
-            documentation_result = generate_markdown_documentation(code_refactoring_result=refactoring_result,directory_path=directory_path)
-        elif doc_format.lower() == 'pdf':
-            documentation_result = generate_pdf_documentation(code_refactoring_result=refactoring_result, directory_path=directory_path)
-        elif doc_format.lower() == 'html':
-            documentation_result = generate_html_documentation(code_refactoring_result=refactoring_result,directory_path=directory_path)
-        else:
-            documentation_result = "Formato di documentazione non supportato"
+    # if doc_format:
+    #     if doc_format.lower() == 'markdown':
+    #         documentation_result = generate_markdown_documentation(code_refactoring_result=refactoring_result,directory_path=directory_path)
+    #     elif doc_format.lower() == 'pdf':
+    #         documentation_result = generate_pdf_documentation(code_refactoring_result=refactoring_result, directory_path=directory_path)
+    #     elif doc_format.lower() == 'html':
+    #         documentation_result = generate_html_documentation(code_refactoring_result=refactoring_result,directory_path=directory_path)
+    #     else:
+    #         documentation_result = "Formato di documentazione non supportato"
 
     # Restituzione dei risultati
     return {
