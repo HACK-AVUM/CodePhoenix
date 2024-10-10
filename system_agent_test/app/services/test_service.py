@@ -41,3 +41,4 @@ def perform_test(old_code, old_code_analysis_result, new_code_to_test, binary_re
     test_result = testing_crew.kickoff()
 
     return str(test_result.raw)
+
