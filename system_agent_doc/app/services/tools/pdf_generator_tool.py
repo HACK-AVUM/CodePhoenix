@@ -6,7 +6,7 @@ from reportlab.pdfgen import canvas
 import os
 
 
-@tool("PDF-DOC")
+@tool
 def generate_pdf(module_path: str, output_file: str) -> str:
     """
     Genera la documentazione del codice per il file Python specificato e la salva in un file PDF.

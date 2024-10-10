@@ -88,10 +88,11 @@ Dopo aver avviato l'applicazione e aver visto nel terminale il messaggio `SonarQ
    - Password: `admin`
 3. Segui le istruzioni per cambiare la password al primo accesso
 4. Crea un nuovo progetto locale chiamato "project", usando le "global settings"
-5. Genera un token per questo progetto per l'analisi locale
-6. Copia il token generato
-7. Apri il file `.env` nella directory principale del progetto
-8. Aggiungi la seguente riga, sostituendo `<TUO_TOKEN_SONARQUBE>` con il token copiato:
+5. Vai nelle opzione "Locally" 
+6. Genera un token per questo progetto per l'analisi locale
+7. Copia il token generato
+8. Apri il file `.env` nella directory principale del progetto
+9. Aggiungi la seguente riga, sostituendo `<TUO_TOKEN_SONARQUBE>` con il token copiato:
 
    ```
    SONARQUBE_TOKEN=<TUO_TOKEN_SONARQUBE>

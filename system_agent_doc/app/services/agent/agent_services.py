@@ -14,9 +14,9 @@ from crewai_tools import (
 )
 
 
-from app.services.tools import markdown_generator_tool
-from app.services.tools import html_generator_tool
-from app.services.tools import pdf_generator_tool
+from system_agent_doc.app.services.tools import markdown_generator_tool
+from system_agent_doc.app.services.tools import html_generator_tool
+from system_agent_doc.app.services.tools import pdf_generator_tool
 
 
 ######################################################################################## SERVICES ################################################################################

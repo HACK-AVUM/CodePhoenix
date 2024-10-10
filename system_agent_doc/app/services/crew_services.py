@@ -2,10 +2,10 @@ from crewai import Crew
 from crewai.process import Process
 
 # Import TASK
-from app.services.task.tasks_services import create_analyze_code_task
-from app.services.task.tasks_services import create_generate_markdown_task,create_generate_html_task,create_generate_pdf_task
+from system_agent_doc.app.services.task.tasks_services import create_analyze_code_task
+from system_agent_doc.app.services.task.tasks_services import create_generate_markdown_task,create_generate_html_task,create_generate_pdf_task
 # Import Services
-from app.services.agent.agent_services import create_code_analyzer_agent, create_html_documenter_agent, create_markdown_documenter_agent, create_pdf_documenter_agent
+from system_agent_doc.app.services.agent.agent_services import create_code_analyzer_agent, create_html_documenter_agent, create_markdown_documenter_agent, create_pdf_documenter_agent
 
 
 
