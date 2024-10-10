@@ -1,6 +1,8 @@
 import os
 import threading
 
+from system_agent_doc.app.services.docs_service import generate_html_documentation, generate_pdf_documentation,generate_markdown_documentation
+
 os.environ["OTEL_SDK_DISABLED"] = "true"
 
 os.environ["LLM"] = "together_ai/meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
@@ -14,7 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict, Any
 import zipfile
 import io
-from fastapi import UploadFile
+
 import uuid
 from system_agent_analysis.src.crews.quality_control_crew import analyze_code
 from system_agent_refactoring.src.crews.refactor_crew import refactoring_code
@@ -78,21 +80,43 @@ async def scan_vulnerabilities_endpoint(code_input: CodeInput):
 #     return ServiceResponse(status="success", result=response.json())
 
 
-def process_code_string(code: str) -> Dict[str, Any]:
+def process_code_string(code: str, doc_format: str = None, directory_path: str = None) -> Dict[str, Any]:
+    # Analisi del codice
     analysis_result = analyze_code(code)
+    
+    # Scansione delle vulnerabilità
     scan_result = perform_scan_vulnerability(code)
+    
+    # Rifattorizzazione del codice
     refactoring_result = refactoring_code(code, analysis_result)
+    
+    # Testing del codice rifattorizzato
     test_result = perform_test(code, analysis_result, refactoring_result)
+    
+    # Generazione della documentazione se doc_format è specificato
+    documentation_result = None
 
+    #TODO : Al posto dei directory path vuoti, inserisci quale sorta di path vuoi per poter generare il PDF, HTML, MARKDOWN ( Effettua questa modifica da Front-End , facendo selezionare all'utente il percorso dove generare la documentazione)
+    #TODO : Esegui anche altre modifiche se necessarie 
+    
+    if doc_format:
+        if doc_format.lower() == 'markdown':
+            documentation_result = generate_markdown_documentation(code_refactoring_result=refactoring_result,directory_path=directory_path)
+        elif doc_format.lower() == 'pdf':
+            documentation_result = generate_pdf_documentation(code_refactoring_result=refactoring_result, directory_path=directory_path)
+        elif doc_format.lower() == 'html':
+            documentation_result = generate_html_documentation(code_refactoring_result=refactoring_result,directory_path=directory_path)
+        else:
+            raise ValueError(f"Formato di documentazione non supportato: {doc_format}")
 
-
+    # Restituzione dei risultati
     return {
         "analysis_result": analysis_result,
         "scan_result": scan_result,
         "refactoring_result": refactoring_result,
         "test_result": test_result,
+        "documentation_result": documentation_result,
     }
-
 
 task_results = {}
 
@@ -219,12 +243,12 @@ def process_zip_file(zip_contents: bytes, doc_format: str, task_id: str):
         print("Invalid difficulty rating")
 
 
-    result.update(process_code_string(all_code))
+    result.update(process_code_string(all_code, doc_format))
 
     to_repeat = perform_test(all_code, result["analysis_result"], result["refactoring_result"], binary_response=True)
     if to_repeat == "1":
         print("Repeating the task")
-        result.update(process_code_string(all_code))
+        result.update(process_code_string(all_code, doc_format))
 
 
     print(f"##########Analysis Result##########\n{result['analysis_result']}\n\n\n\n"
