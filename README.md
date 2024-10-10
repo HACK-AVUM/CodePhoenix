@@ -1,11 +1,10 @@
 # CodePhoenix
+
 <p align="center">
   <img width="300" height="300" src="./docs/Logo-Havum.svg" style="border-radius: 10px;">
   <br>
-  <i>Logo Code Phoenix per l'Hackaton Code Rebirth 2024</i>
+  <i>Code Phoenix : Hackaton Code Rebirth 2024</i>
 </p>
-
-
 
 # Guida all'Installazione e Avvio dell'Applicazione
 
@@ -22,7 +21,10 @@
 - [Riavvio dell'Applicazione](#riavvio-dellapplicazione)
 - [Accesso all'Applicazione](#accesso-allapplicazione)
 - [Note Aggiuntive](#note-aggiuntive)
+- [Architettura dell'applicazione](#architettura-dellapplicazione)
+- [Sequence Diagram](#sequence-diagram)
 - [Documentazione Aggiuntiva](#documentazione-aggiuntiva)
+
 
 ## Prerequisiti
 
@@ -118,7 +120,16 @@ Dopo aver configurato SonarQube e riavviato l'applicazione, puoi accedere al fro
 http://localhost:3000
 ```
 
+## Architettura dell'applicazione
 
+![Microservice Architecture](./docs/Architecture.png)
+
+
+## Sequence Diagram 
+
+
+
+![Sequence Diagram](./docs/Sequence-Diagram.svg)
 
 
 ## Documentazione Aggiuntiva
@@ -131,8 +142,6 @@ Per ulteriori dettagli sui vari microservizi del progetto, consulta i seguenti d
 | Sistema di Test     💻            | Test automatici e integrazione continua         | [Documentazione Test](docs/readme-system_agent_test.md)       |
 | Sistema di Scansione      🔎       | Scansione di sicurezza e vulnerabilità          | [Documentazione Scansione](docs/readme-system_agent_scan.md)    |
 | Sistema di Refactoring ⚙️          | Refactoring e miglioramento del codice          | [Documentazione Refactoring](docs/readme-system_agent_refactoring.md) |
-
-
 
 ### Note Aggiuntive
 
