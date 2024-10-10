@@ -8,13 +8,13 @@
 
 # Guida all'Installazione e Avvio dell'Applicazione
 
-## Sommario
+## Indice
 
-- [Prerequisiti](#prerequisiti)
-- [Opzione 1: Installazione Diretta](#opzione-1-installazione-diretta)
-- [Opzione 2: Installazione con Docker](#opzione-2-installazione-con-docker)
-- [Configurazione di SonarQube](#configurazione-di-sonarqube)
-- [Accesso all'Applicazione](#accesso-allapplicazione)
+- [Guida all'Installazione e Avvio dell'Applicazione](#guida-allinstallazione-e-avvio-dellapplicazione)
+  - [Prerequisiti](#prerequisiti)
+  - [Opzione 1: Installazione Diretta](#opzione-1-installazione-diretta)
+  - [Opzione 2: Installazione con Docker](#opzione-2-installazione-con-docker)
+  - [Accesso all'Applicazione](#accesso-allapplicazione)
 - [Architettura dell'applicazione](#architettura-dellapplicazione)
 - [Sequence Diagram](#sequence-diagram)
 - [Documentazione Aggiuntiva](#documentazione-aggiuntiva)
@@ -100,15 +100,6 @@ Dopo aver avviato l'applicazione e aver visto nel terminale il messaggio `SonarQ
 9. Salva e chiudi il file `.env`
 
 
-### 6. Configurazione del file .env
-
-1. Crea un file `.env` nella directory principale del progetto
-2. Aggiungi le seguenti righe, sostituendo i valori appropriati:
-   ```
-   TOGETHERAI_API_KEY=<TUA_CHIAVE_API_TOGETHER_AI>
-   SONARQUBE_TOKEN=<TUO_TOKEN_SONARQUBE>
-   ```
-
 ### 7. Avvio dell'Applicazione
 
 1. Avvia il backend:
@@ -186,7 +177,7 @@ Dopo aver avviato l'applicazione e aver visto il messaggio `SonarQube is operati
 Dopo aver configurato SonarQube, per applicare le nuove configurazioni, fermare l'applicazione con `Ctrl+C`, poi ricompilarla e riavviarla con il seguente comando:
 
 ```bash
-docker-compose build && docker-compose up
+docker compose build && docker compose up
 ```
 
 
@@ -211,9 +202,3 @@ Ecco la tabella aggiornata con il microservizio di documentazione:
 | Sistema di Scansione      ⚡       | Scansione di sicurezza e vulnerabilità          | [Documentazione Scansione](docs/readme-system_agent_scanning.md)    |
 | Sistema di Refactoring ⚙️          | Refactoring e miglioramento del codice          | [Documentazione Refactoring](docs/readme-system_agent_refactoring.md) |
 | Sistema di Documentazione 📚      | Generazione di documentazione per il codice refattorizzato | [Documentazione Documentazione](docs/readme-system_agent_documentation.md) |
-
-### Note Aggiuntive
-
-- Per arrestare l'applicazione, premi `Ctrl+C` nel terminale dove hai eseguito `docker compose up`.
-- Per eseguire l'applicazione in background, usa il comando `docker compose up -d`.
-- Per visualizzare i log dell'applicazione in esecuzione in background, usa `docker compose logs -f`.
